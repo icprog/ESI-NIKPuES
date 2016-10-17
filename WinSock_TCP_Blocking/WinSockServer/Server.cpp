@@ -1,7 +1,7 @@
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "C:/Users/TEMP.FTN/Desktop/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h"
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27016"
 
@@ -9,6 +9,8 @@ bool InitializeWindowsSockets();
 
 int  main(void) 
 {
+
+
     // Socket used for listening for new clients 
     SOCKET listenSocket = INVALID_SOCKET;
     // Socket used for communication with client

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
+#include "C:/Users/TEMP.FTN/Desktop/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h"
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT 27016
@@ -63,7 +64,7 @@ int __cdecl main(int argc, char **argv)
     }
  
     // Send an prepared message with null terminator included
-    iResult = send( connectSocket, messageToSend, (int)strlen(messageToSend) + 1, 0 );
+	iResult = SEND(connectSocket, messageToSend);
 
     if (iResult == SOCKET_ERROR)
     {

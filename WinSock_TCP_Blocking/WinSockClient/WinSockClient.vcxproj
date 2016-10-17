@@ -79,6 +79,11 @@
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SocketNonBlocking\SocketNonBlocking.vcxproj">
+      <Project>{6a7b44d3-704a-4e86-a3a9-2db6502289ef}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
