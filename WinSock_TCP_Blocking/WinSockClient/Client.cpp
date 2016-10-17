@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
-#include "C:/Users/TEMP.FTN/Desktop/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h"
+#include "C:/Users/TEMP.FTN/Desktop/blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT 27016

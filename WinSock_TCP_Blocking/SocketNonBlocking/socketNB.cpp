@@ -73,7 +73,7 @@ int SEND(SOCKET socket, char* buffer){
 		}
 		i += iResult;
 	}
-	return SUCCESS; // success code: 0
+	return iResult; // success code: 0
 }
 
 
