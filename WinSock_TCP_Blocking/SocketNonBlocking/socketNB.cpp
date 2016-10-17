@@ -77,7 +77,7 @@ int SEND(SOCKET socket, char* buffer){
 }
 
 
-int recieveNB(SOCKET socket, char* buffer, int bufferLength){
+int receiveNB(SOCKET socket, char* buffer, int bufferLength){
 	int iResult, i = 0;
 	int sockAddrLen = sizeof(struct sockaddr);
 	FD_SET set;
@@ -110,8 +110,6 @@ int recieveNB(SOCKET socket, char* buffer, int bufferLength){
 	}
 
 
-	do
-	{
 		// Receive data until the client shuts down the connection
 		iResult = recv(socket, buffer, bufferLength, 0);
 		if (iResult > 0)
@@ -130,8 +128,28 @@ int recieveNB(SOCKET socket, char* buffer, int bufferLength){
 			printf("recv failed with error: %d\n", WSAGetLastError());
 			closesocket(socket);
 		}
-	} while (iResult > 0);
+	
 
 	return iResult; // success code: 0;
 
+}
+
+int RECEIVE(SOCKET socket, char* buffer) {
+	int i = 0;
+	int len = 15;
+	int iResult;
+	while (i < len) {
+		do {
+			iResult = receiveNB(socket, buffer, len - i);
+		} while (iResult == SLEEP);
+		if (iResult == SOCKET_ERROR)
+		{
+			printf("sendto failed with error: %d\n", WSAGetLastError());
+			closesocket(socket);
+			WSACleanup();
+			return CONN_ERR; // connection error code: 2
+		}
+		i += iResult;
+	}
+	return SUCCESS; // success code: 0
 }
