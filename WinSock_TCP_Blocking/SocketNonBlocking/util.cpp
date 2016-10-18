@@ -50,7 +50,7 @@ void expand(Buffer * buffer)
 	newData[i] = buffer->data[i];
 	}*/
 
-	free(buffer->data);
+	//free(buffer->data);  MEMORY LEAK
 	buffer->data = newData;
 	buffer->size = newSize;
 	buffer->pushIdx = buffer->count;
@@ -79,14 +79,14 @@ int add(Buffer *buffer, char * data)
 	int rest = buffer->size - buffer->pushIdx + 1;
 	if (sizeOfData > rest) {  
 		//buffer->popIdx = buffer->pushIdx;
-		memcpy(buffer->data + buffer->count, data, rest);
+		memcpy(buffer->data + buffer->pushIdx, data, rest);
 		memcpy(buffer->data, data + rest - 1, sizeOfData - rest);
 		buffer->pushIdx = sizeOfData - rest;
 		buffer->count += sizeOfData;
 	}
 	else {
 		//buffer->popIdx = buffer->count;
-		memcpy(buffer->data + buffer->count, data, sizeOfData);
+		memcpy(buffer->data + buffer->pushIdx, data, sizeOfData);
 		buffer->count += sizeOfData;
 		buffer->pushIdx = buffer->count;
 	}
@@ -105,6 +105,11 @@ int add(Buffer *buffer, char * data)
 	for (int i = 0; i < buffer->size; i++) {
 		printf("%c", buffer->data[i]);
 	}
+	printf("\nOstatak: \n");
+	printf("PopIdx: %d\n", buffer->popIdx);
+	printf("PushIdx: %d\n", buffer->pushIdx);
+	printf("Count: %d\n", buffer->count);
+	printf("Size: %d\n", buffer->size);
 	/*end of debut output*/
 	
 
@@ -178,8 +183,8 @@ int remove(Buffer * buffer, char * data)
 
 	//prvi slucaj da je data negde u sredini i onda je pomeramo na pocetak
 	if (buffer->popIdx < buffer->pushIdx) {
-		memcpy(data, buffer->data + velicina - 1, velicina); //kopiraj data na pocetak buffer-a
-		memset(buffer->data + velicina - 1, 0, velicina);
+		memcpy(data, buffer->data + buffer->popIdx, velicina); //kopiraj data na pocetak buffer-a
+		memset(buffer->data + buffer->popIdx, 0, velicina);
 		buffer->popIdx += velicina;
 	}
 	else {
@@ -209,6 +214,11 @@ int remove(Buffer * buffer, char * data)
 	for (int i = 0; i < buffer->size; i++) {
 		printf("%c", buffer->data[i]);
 	}
+	printf("\nOstatak: \n");
+	printf("PopIdx: %d\n", buffer->popIdx);
+	printf("PushIdx: %d\n", buffer->pushIdx);
+	printf("Count: %d\n", buffer->count);
+	printf("Size: %d\n", buffer->size);
 	/*end of debut output*/
 	return 0;
 }

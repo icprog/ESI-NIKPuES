@@ -13,6 +13,18 @@ int main()
 	char *poruka = "ovo je poruka!";
 	memcpy((int *)data +1, poruka, 14);
 
+	char *data2 = (char *)malloc(sizeof(char) * 5);
+	memset(data2, 0, 5);
+	data2[0] = 5;
+	poruka = "nije";
+	memcpy((int *)data2 + 1, poruka,4);
+
+	char *data3 = (char *)malloc(sizeof(char) * 15);
+	memset(data3, 0, 15);
+	data3[0] = 15;
+	poruka = "mozda ovo";
+	memcpy((int *)data3 + 1, poruka, 9);
+
 
 
 
@@ -22,12 +34,15 @@ int main()
 	myByffer.size = 35;
 	myByffer.data = (char *)malloc(sizeof(char) * 35);
 	memset(myByffer.data, 0, 35);
-	add(&myByffer, data);
-	add(&myByffer, data);
-	remove(&myByffer, data);
-	expand(&myByffer);
-	expand(&myByffer);
-	shrink(&myByffer);
+
+	for (int i = 0; i < 1000; i++) {
+		add(&myByffer, data);
+		add(&myByffer, data2);
+		remove(&myByffer, data);
+		add(&myByffer, data3);
+		add(&myByffer, data);
+	}
+
     return 0;
 }
 
