@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
-#include "C:/Users/TEMP.FTN/Desktop/blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
+#include "C:/Users/ra64-2012/Desktop/Blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT 27016
@@ -63,6 +63,10 @@ int __cdecl main(int argc, char **argv)
         WSACleanup();
     }
  
+	// Set socket to nonblocking mode
+	unsigned long int nonBlockingMode = 1;
+	iResult = ioctlsocket(connectSocket, FIONBIO, &nonBlockingMode);
+
     // Send an prepared message with null terminator included
 	iResult = SEND(connectSocket, messageToSend);
 

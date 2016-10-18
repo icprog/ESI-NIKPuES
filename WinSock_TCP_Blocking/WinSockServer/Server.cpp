@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "C:/Users/TEMP.FTN/Desktop/blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
+#include "C:/Users/ra64-2012/Desktop/Blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27016"
@@ -72,6 +72,10 @@ int  main(void)
         WSACleanup();
         return 1;
     }
+
+	// Set socket to nonblocking mode
+	unsigned long int nonBlockingMode = 1;
+	iResult = ioctlsocket(acceptedSocket, FIONBIO, &nonBlockingMode);
 
     // Since we don't need resultingAddress any more, free it
     freeaddrinfo(resultingAddress);

@@ -32,7 +32,7 @@ int main()
 	myByffer.popIdx = 0;
 	myByffer.pushIdx = 0;
 	myByffer.size = 35;
-	myByffer.data = (char *)malloc(sizeof(char) * 35);
+	myByffer.data = (char *)malloc(sizeof(char) * 35+1);
 	memset(myByffer.data, 0, 35);
 
 	for (int i = 0; i < 1000; i++) {
