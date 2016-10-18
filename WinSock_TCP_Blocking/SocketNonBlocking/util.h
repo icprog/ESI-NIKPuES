@@ -11,8 +11,8 @@ typedef struct buffer {
 	int size;
 } Buffer;
 
-int add(Buffer *buffer, char *data, int dataSize);            // adding data to the buffer
-int remove(Buffer *buffer, char *data, int dataSize);         // removing data from the buffer
+int add(Buffer *buffer, char *data);            // adding data to the buffer
+int remove(Buffer *buffer, char *data);         // removing data from the buffer
 void expand(Buffer *buffer, int howMuch);					   // expand the buffer size
 void shrink(Buffer *buffer);                     // shrink the buffer size when it's fulness is less or equal 25%
 int isEnough(int dataLength, int bufferLength);  //is enough place for data in buffer
