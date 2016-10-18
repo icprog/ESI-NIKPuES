@@ -1,6 +1,9 @@
 #include "util.h"
 #include <stdlib.h>
+<<<<<<< HEAD
 #include "stdafx.h"
+=======
+>>>>>>> f3330c768d4b2e7678329bb45d83b70299369c5d
 
 /* CIRCULAR BUFFER INTERFACE */
 typedef struct buffer {
@@ -12,6 +15,7 @@ typedef struct buffer {
 	int size;
 } Buffer;
 
+<<<<<<< HEAD
 int add(Buffer *buffer, char * data, int dataSize)
 {
 	// ako je bafer vec pun count == size, radi prosirivanje, ali prvo utvrdi za koliko puta
@@ -76,3 +80,60 @@ void shrink(Buffer * buffer)
 
 	}
 }
+=======
+int remove(Buffer * buffer, char * data, int dataSize)
+{
+	//ako se poklapaju pop i pushIdx, nemamo podataka
+	/*if (buffer->popIdx == buffer->pushIdx) {
+		return -1; //vrati gresku
+	}*/
+
+
+	if (buffer->count == 0) {
+		return false;
+	}
+
+	for (int i = 0; i < dataSize; i++) {
+
+		data[i] = buffer->data[buffer->popIdx];
+
+		buffer->popIdx ++;
+
+		if (buffer->popIdx == buffer->size) {
+			buffer->popIdx = 0;
+		}
+	}
+
+	buffer->count -= dataSize;
+
+}
+
+void expand(Buffer * buffer, int howMuch)
+{
+	char* newData;
+	int newSize;
+
+	if (howMuch == 0) { 
+		newSize = buffer->size * 2; 
+		newData = (char *)malloc(sizeof(char)*newSize);
+	}
+	else {
+		newSize = buffer->size * howMuch;
+		newData = (char *)malloc(sizeof(char)*newSize);
+	}
+
+	//kada povecamo moramo da premestimo podatke sa kraja starog buffer-a na pocetak novog buffer-a
+	for (int i = 0; i < buffer->count; i++) {
+		if (buffer->popIdx == buffer->size)
+			buffer->popIdx = 0;
+
+		newData[i] = buffer->data[i];
+	}
+
+	buffer->data = newData;
+	buffer->size = newSize;
+	buffer->pushIdx = buffer->count;
+	buffer->popIdx = 0;
+
+}
+>>>>>>> f3330c768d4b2e7678329bb45d83b70299369c5d
