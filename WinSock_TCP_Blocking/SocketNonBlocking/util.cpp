@@ -50,7 +50,7 @@ void expand(Buffer * buffer)
 	newData[i] = buffer->data[i];
 	}*/
 
-	//free(buffer->data);  MEMORY LEAK
+	free(buffer->data);  
 	buffer->data = newData;
 	buffer->size = newSize;
 	buffer->pushIdx = buffer->count;
