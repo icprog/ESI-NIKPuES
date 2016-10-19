@@ -2,7 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/util.h"
+#include "C:/Users/RA64-2012/Desktop/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/util.h"  //davor
+//#include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/util.h"
 
 int main()
 {
