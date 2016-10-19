@@ -2,7 +2,14 @@
 #include "stdafx.h"
 #include "util.h"
 
-void add(Buffer *queue, Buffer *buffer);          //queue je niz, a buffer je pokazivac na buffer
-void remove(Buffer *queue, Buffer *buffer);
-void clear(Buffer *queue);
-void expand(Buffer *queue);
+typedef struct queue {
+	Buffer *buffer;
+	int count;
+	int size;
+} Queue;
+
+void initializeQueue(Queue *queue, int size);
+void addBuffer(Queue *queue, Buffer *buffer);     
+void removeBuffer(Queue *queue, Buffer *buffer);
+void clearQueue(Queue *queue);
+void expandQueue(Queue *queue);

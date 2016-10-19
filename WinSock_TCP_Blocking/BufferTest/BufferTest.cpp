@@ -42,6 +42,14 @@ int main()
 	add(&myByffer, data);
 	
 	free(data);
+
+	int *array;
+	array = (int *)malloc(sizeof(int) * 15);
+	int a = 5;
+	array[0] = a;
+
+	printf("%d", array[0]);
+	 
     return 0;
 }
 

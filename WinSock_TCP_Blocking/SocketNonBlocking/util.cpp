@@ -168,6 +168,21 @@ void shrink(Buffer * buffer)
 
 }
 
+Buffer * createBuffer(char * name, int bufferLength)
+{
+	Buffer buffer;
+
+	buffer.name = name;
+	buffer.count = 0;
+	buffer.popIdx = 0;
+	buffer.pushIdx = 0;
+	buffer.size = bufferLength;
+	buffer.data = (char *)malloc(sizeof(char) * bufferLength + 1);
+	memset(buffer.data, 0, bufferLength);
+
+	return &buffer;
+}
+
 int remove(Buffer * buffer, char * data)
 {
 	//ako se poklapaju pop i pushIdx, nemamo podataka
