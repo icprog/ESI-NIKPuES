@@ -11,10 +11,13 @@ typedef struct buffer {
 	int size;
 } Buffer;
 
+
 void expand(Buffer *buffer);					// expand the buffer size
 int add(Buffer *buffer, char *data);            // adding data to the buffer
 int remove(Buffer *buffer, char *data);         // removing data from the buffer
 void shrink(Buffer *buffer);					// shrink the buffer size when it's fulness is less or equal 25%
-void destroyBuffer(Buffer *buffer);			    //destroy  buffer
+Buffer *createBuffer(char *name, int bufferLength); // create buffer
+void destroyBuffer(Buffer *buffer);              // destroy buffer
+
 
 /* CIRCULAR BUFFER INTERFACE */

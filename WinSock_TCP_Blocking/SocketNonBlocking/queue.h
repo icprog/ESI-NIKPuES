@@ -3,12 +3,14 @@
 #include "util.h"
 
 typedef struct queue {
-	Buffer **buffer;
+	Buffer *buffer;
 	int count;
 	int size;
 }Queue;
 
-void addBuffer(Buffer *queue, Buffer *buffer);          //queue je niz, a buffer je pokazivac na buffer
+void addBuffer(Queue *queue, Buffer *buffer);          //queue je niz, a buffer je pokazivac na buffer
 void removeBuffer(Queue *queue, Buffer *buffer);
 void clearQueue(Queue *queue);
-void expandQueue(Buffer *queue);
+void expandQueue(Queue *queue);
+void initializeQueue(Queue *queue, int size);
+

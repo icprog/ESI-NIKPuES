@@ -161,14 +161,12 @@ void shrink(Buffer * buffer)
 		buffer->size = newSize;
 		buffer->pushIdx = buffer->count;
 		buffer->popIdx = 0;
-
-
-
 	}
 
 }
 
-void destroyBuffer(Buffer * buffer)
+
+	void destroyBuffer(Buffer * buffer)
 {
 	free(buffer->data);
 	buffer->popIdx = -1;
@@ -176,6 +174,21 @@ void destroyBuffer(Buffer * buffer)
 	buffer->count = -1;
 	buffer->size = -1;
 	buffer = NULL;
+}
+Buffer * createBuffer(char * name, int bufferLength)
+{
+	Buffer buffer;
+
+	buffer.name = name;
+	buffer.count = 0;
+	buffer.popIdx = 0;
+	buffer.pushIdx = 0;
+	buffer.size = bufferLength;
+	buffer.data = (char *)malloc(sizeof(char) * bufferLength + 1);
+	memset(buffer.data, 0, bufferLength);
+
+	return &buffer;
+
 }
 
 int remove(Buffer * buffer, char * data)
