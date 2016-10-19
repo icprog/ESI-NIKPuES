@@ -31,3 +31,10 @@
 # Debug files
 *.dSYM/
 *.su
+
+#VS 
+*/*.VC.db
+*/*.sln
+*/*.suo
+*/.vs/QueueingService/v14/*
+*/ipch/*
