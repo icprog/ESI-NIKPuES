@@ -12,6 +12,7 @@ bool InitializeWindowsSockets();
 int  main(void) 
 {
 
+	unsigned long int NON_BLOCKING_MODE = 1;
 
     // Socket used for listening for new clients 
     SOCKET listenSocket = INVALID_SOCKET;
@@ -107,7 +108,7 @@ int  main(void)
             WSACleanup();
             return 1;
         }
-
+		// TODO 2: IOCTLSOCKET iz UDP-a!!!
         do
         {
             // Receive data until the client shuts down the connection

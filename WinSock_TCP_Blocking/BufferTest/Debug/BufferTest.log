@@ -1,1 +1,3 @@
-﻿LINK : fatal error LNK1168: cannot open C:\Users\RA4-2012\Documents\ESI-NIKPuES\WinSock_TCP_Blocking\Debug\BufferTest.exe for writing
+﻿  BufferTest.cpp
+BufferTest.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
+  BufferTest.vcxproj -> C:\Users\RA4-2012\Documents\ESI-NIKPuES\WinSock_TCP_Blocking\Debug\BufferTest.exe

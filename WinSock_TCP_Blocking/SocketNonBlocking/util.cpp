@@ -50,7 +50,7 @@ void expand(Buffer * buffer)
 	newData[i] = buffer->data[i];
 	}*/
 
-	//free(buffer->data);  MEMORY LEAK
+	free(buffer->data);  
 	buffer->data = newData;
 	buffer->size = newSize;
 	buffer->pushIdx = buffer->count;
@@ -166,6 +166,16 @@ void shrink(Buffer * buffer)
 
 	}
 
+}
+
+void destroyBuffer(Buffer * buffer)
+{
+	free(buffer->data);
+	buffer->popIdx = -1;
+	buffer->pushIdx = -1;
+	buffer->count = -1;
+	buffer->size = -1;
+	buffer = NULL;
 }
 
 int remove(Buffer * buffer, char * data)
