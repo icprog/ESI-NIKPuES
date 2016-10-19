@@ -2,15 +2,78 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "C:/Users/ra64-2012/Desktop/Blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
-
+//#include "C:/Users/ra64-2012/Desktop/Blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
+#include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h"
+#include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/util.h"
 #define DEFAULT_BUFLEN 512
+#define INITIAL_QUEUE_SIZE 512
 #define DEFAULT_PORT "27016"
 
 bool InitializeWindowsSockets();
 
+
 int  main(void) 
 {
+	enum CONNECTION { CLIENT = 1, SERVER=2};
+	int answer = -1;
+
+	do {
+		printf("Aplikacija se inicijalno ponasa kao: ");
+		printf("\n\t1) KLIJENT");
+		printf("\n\t2) SERVER");
+		printf("\n>  ");
+		scanf("%d", &answer);
+		printf("\nOdgovor: %d", answer);
+	} while (answer < CLIENT && answer > SERVER);
+
+	printf("\nOva aplikacija ce se ponasati kao: ");
+	if (answer == CLIENT){
+		printf("klijent. Pokusace se inicijalizacija  i komunikacija sa serverom.");
+		char *imered1 = "RED1";
+		char *imered11 = "RED11";
+		char *imered2 = "RED2";
+		char *imered21 = "RED21";
+		char *imered3 = "RED3";
+		char *imered31 = "RED31";
+
+		Buffer red1;
+		Buffer red11;
+		Buffer red2;
+		Buffer red21;
+		Buffer red3;
+		Buffer red31;
+
+		createBuffer(&red1, imered1, DEFAULT_BUFLEN);
+		createBuffer(&red11, imered11, DEFAULT_BUFLEN);
+		createBuffer(&red2, imered2, DEFAULT_BUFLEN);
+		createBuffer(&red21, imered21, DEFAULT_BUFLEN);
+		createBuffer(&red3, imered3, DEFAULT_BUFLEN);
+		createBuffer(&red31, imered31, DEFAULT_BUFLEN);
+
+		Buffer *bufferArray = (Buffer *)malloc(sizeof(Buffer)*INITIAL_QUEUE_SIZE);
+		bufferArray[0] = red1;
+		bufferArray[1] = red11;
+		bufferArray[2] = red2;
+		bufferArray[3] = red21;
+		bufferArray[4] = red3;
+		bufferArray[5] = red31;
+		Queue queue;
+		initializeQueue(&queue, INITIAL_QUEUE_SIZE);
+		queue.buffer = bufferArray;
+
+
+	}
+	else{
+		printf("server. Ceka se na inicijalizaciju i uspostavljanje veze sa klijentom.");
+	}
+
+
+
+
+
+
+
+
 
 
     // Socket used for listening for new clients 

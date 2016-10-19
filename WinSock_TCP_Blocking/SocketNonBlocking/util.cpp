@@ -3,14 +3,6 @@
 #include <string.h>
 #include "stdafx.h"
 
-int dataSize(char * data) {
-	//int dataSize=0;
-	return *((int*)data);
-	//return dataSize;
-}
-
-
-/* CIRCULAR BUFFER INTERFACE */
 typedef struct buffer {
 	char *name;
 	char *data;
@@ -20,6 +12,21 @@ typedef struct buffer {
 	int size;
 } Buffer;
 
+typedef struct queue {
+	Buffer *buffer;
+	int count;
+	int size;
+}Queue;
+
+
+/* CIRCULAR BUFFER IMPLEMENTATION */
+
+
+int dataSize(char * data) {
+	//int dataSize=0;
+	return *((int*)data);
+	//return dataSize;
+} 
 void expand(Buffer * buffer)
 {
 	// TODO 1: proveriti da li je bafer prazan
@@ -168,6 +175,28 @@ void shrink(Buffer * buffer)
 
 }
 
+void createBuffer(Buffer * buffer, char * name, int bufferLength)
+{
+
+	buffer->name = name;
+	buffer->count = 0;
+	buffer->popIdx = 0;
+	buffer->pushIdx = 0;
+	buffer->size = bufferLength;
+	buffer->data = (char *)malloc(sizeof(char) * bufferLength + 1);
+	memset(buffer->data, 0, bufferLength);
+}
+
+void destroyBuffer(Buffer * buffer)
+{
+	free(buffer->data);
+	buffer->popIdx = -1;
+	buffer->pushIdx = -1;
+	buffer->count = -1;
+	buffer->size = -1;
+	buffer = NULL;
+}
+
 int remove(Buffer * buffer, char * data)
 {
 	//ako se poklapaju pop i pushIdx, nemamo podataka
@@ -223,3 +252,60 @@ int remove(Buffer * buffer, char * data)
 	return 0;
 }
 
+/* CIRCULAR BUFFER IMPLEMENTATION */
+
+/* QUEUE IMPLEMENTATION */
+void expandQueue(Queue * queue)
+{
+	Buffer *newArray;
+	newArray = (Buffer *)malloc(sizeof(Buffer) * queue->size * 2);
+	queue->size *= 2;
+	free(queue->buffer);
+	queue->buffer = newArray;
+}
+
+void addBuffer(Queue * queue, Buffer * buffer)
+{
+	if (queue->count == queue->size)
+		expandQueue(queue);
+
+	queue->buffer[queue->count] = *buffer;
+
+	queue->count++;
+}
+
+void removeBuffer(Queue * queue, Buffer * buffer)
+{
+	//smanji count i prolazi kroz sve elemente niza i obrisi bafer sa yadatim imenom
+	queue->count--;
+
+	for (int i = 0; i < queue->count; i++) {
+		if (strcmp(queue->buffer[i].name, buffer->name) == 0) {
+			destroyBuffer(&(queue->buffer[i]));
+			break;
+		}
+	}
+}
+
+void clearQueue(Queue * queue)
+{
+	//prodji kroz sve elemente reda i obrisi ih
+	for (int i = 0; i < queue->count; i++) {
+		destroyBuffer(&(queue->buffer[i]));
+		break;
+	}
+}
+
+
+
+void initializeQueue(Queue * queue, int size)
+{
+	queue->count = 0;
+	queue->size = 0;
+	queue->buffer = (Buffer *)malloc(sizeof(Buffer) * size);
+	memset(queue->buffer, NULL, size);
+}
+
+
+
+/* QUEUE IMPLEMENTATION */
