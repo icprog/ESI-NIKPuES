@@ -1,7 +1,9 @@
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <string.h>
+#include <Windows.h>
+#include <conio.h>
 //#include "C:/Users/ra64-2012/Desktop/Blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
 #include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h"
 #include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/util.h"
@@ -20,6 +22,7 @@ typedef struct clientWaitingParams {
 
 typedef struct receiveThreadParam {
 	SOCKET *acceptedSocket;
+	SRWLOCK *srwLock;
 	Queue *queue;
 } ReceiveThreadParam;
 
@@ -28,7 +31,8 @@ bool InitializeWindowsSockets();
 /* Funkcija programske niti zaduzene za cekanje na klijenta.*/
 DWORD WINAPI clientWaitingThreadFunc(LPVOID param) {
 	CL_PARAMS* clParams = (CL_PARAMS*)param;
-
+	SRWLOCK srwLock;
+	InitializeSRWLock(&srwLock);
 	// ARRAY OF THREAD HANDLES
 	//HANDLE threadArray[THREAD_ARRAY_SIZE];
 	//memset(threadArray, NULL, clParams->queue->count);
@@ -175,6 +179,7 @@ DWORD WINAPI clientWaitingThreadFunc(LPVOID param) {
 				ReceiveThreadParam rtParam;
 				rtParam.acceptedSocket = &socketArray[i];
 				rtParam.queue = clParams->queue;
+				rtParam.srwLock = &srwLock;
 				HANDLE receiveThread;
 				DWORD receiveThreadID;
 				receiveThread = CreateThread(0, 0, NULL, &rtParam, 0, &receiveThreadID);
@@ -213,8 +218,9 @@ DWORD WINAPI clientWaitingThreadFunc(LPVOID param) {
 DWORD WINAPI ReceiveThread(LPVOID lpParam) {
 
 	int iResult = 0;
-	SOCKET acceptedSocket = *((ReceiveTreadParam*)lpParam)->acceptedSocket;
-	Queue queue = *((ReceiveTreadParam*)lpParam)->queue;
+	SOCKET acceptedSocket = *((ReceiveThreadParam*)lpParam)->acceptedSocket;
+	Queue queue = *((ReceiveThreadParam*)lpParam)->queue;
+	SRWLOCK srwLock = *((ReceiveThreadParam*)lpParam)->srwLock;
 	char recvbuf[DEFAULT_BUFLEN];
 	memset(recvbuf, 0, DEFAULT_BUFLEN);
 
@@ -236,7 +242,7 @@ DWORD WINAPI ReceiveThread(LPVOID lpParam) {
 			findBuffer(&queue, buffer, name);
 			free(name);		//oslobadjamo ime koje smo malloc u funkciji parseMessage
 
-			add(buffer, recvbuf); //punimo bafer
+			add(buffer, recvbuf, &srwLock); //punimo bafer
 
 			printf("Message received from client: %s.\n", recvbuf);
 
@@ -268,7 +274,8 @@ int  main(void)
 	char *serviceIp = (char *)malloc(sizeof(char)*32); //other service ip
 	memset(serviceIp, 0, 32);
 	int servicePort = -1; // other service port
-
+	SRWLOCK srwLock;
+	InitializeSRWLock(&srwLock);
 	do {
 		printf("Aplikacija se inicijalno ponasa kao: ");
 		printf("\n\t1) KLIJENT");
@@ -293,12 +300,12 @@ int  main(void)
 	Buffer red3;
 	Buffer red31;
 
-	createBuffer(&red1, imered1, DEFAULT_BUFLEN);
-	createBuffer(&red11, imered11, DEFAULT_BUFLEN);
-	createBuffer(&red2, imered2, DEFAULT_BUFLEN);
-	createBuffer(&red21, imered21, DEFAULT_BUFLEN);
-	createBuffer(&red3, imered3, DEFAULT_BUFLEN);
-	createBuffer(&red31, imered31, DEFAULT_BUFLEN);
+	createBuffer(&red1, imered1, DEFAULT_BUFLEN, &srwLock);
+	createBuffer(&red11, imered11, DEFAULT_BUFLEN, &srwLock);
+	createBuffer(&red2, imered2, DEFAULT_BUFLEN, &srwLock);
+	createBuffer(&red21, imered21, DEFAULT_BUFLEN, &srwLock);
+	createBuffer(&red3, imered3, DEFAULT_BUFLEN, &srwLock);
+	createBuffer(&red31, imered31, DEFAULT_BUFLEN, &srwLock);
 
 	Buffer *bufferArray = (Buffer *)malloc(sizeof(Buffer)*INITIAL_QUEUE_SIZE);
 	bufferArray[0] = red1;
@@ -308,7 +315,7 @@ int  main(void)
 	bufferArray[4] = red3;
 	bufferArray[5] = red31;
 	Queue queue;
-	initializeQueue(&queue, INITIAL_QUEUE_SIZE);
+	initializeQueue(&queue, INITIAL_QUEUE_SIZE, &srwLock);
 	queue.buffer = bufferArray;
 
 	printf("\nOva aplikacija ce se ponasati kao: ");

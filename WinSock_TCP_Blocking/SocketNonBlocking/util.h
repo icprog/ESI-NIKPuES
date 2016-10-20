@@ -17,6 +17,7 @@ int remove(Buffer *buffer, char *data, SRWLOCK *srwLock);					  // removing data
 void shrink(Buffer *buffer, SRWLOCK *srwLock);							  // shrink the buffer size when it's fulness is less or equal 25%
 void createBuffer(Buffer *buffer, char *name, int bufferLength, SRWLOCK *srwLock);		  // create buffer
 void destroyBuffer(Buffer *buffer, SRWLOCK *srwLock);						  // destroy buffe
+int DataNameSize(char * data);
 char* parseMessage(char *data);						  //parse Mesage, get buffer name
 /* CIRCULAR BUFFER INTERFACE */
 

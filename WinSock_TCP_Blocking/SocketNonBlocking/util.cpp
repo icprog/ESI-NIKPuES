@@ -30,6 +30,9 @@ int dataSize(char * data) {
 	return *((int*)data);
 	//return dataSize;
 } 
+int DataNameSize(char * data) {
+	return *((int*)data + 1);
+}
 void expand(Buffer * buffer)
 {
 	// TODO 1: proveriti da li je bafer prazan
