@@ -76,7 +76,7 @@ void expand(Buffer * buffer)
 int add(Buffer *buffer, char * data, SRWLOCK *srwLock)
 {
 
-	AcquireSRWLockExclusive(srwLock);
+	//AcquireSRWLockExclusive(srwLock);
 
 	int sizeOfData = dataSize(data);
 
@@ -115,9 +115,9 @@ int add(Buffer *buffer, char * data, SRWLOCK *srwLock)
 			buffer->pushIdx = 0;
 	}
 	*/
-	ReleaseSRWLockExclusive(srwLock);
+	//ReleaseSRWLockExclusive(srwLock);
 
-	AcquireSRWLockShared(srwLock);
+
 	/*debug output*/
 	printf("\nSadrzaj bafera: ");
 	for (int i = 0; i < buffer->size; i++) {
@@ -129,7 +129,7 @@ int add(Buffer *buffer, char * data, SRWLOCK *srwLock)
 	printf("Count: %d\n", buffer->count);
 	printf("Size: %d\n", buffer->size);
 	/*end of debut output*/
-	ReleaseSRWLockShared(srwLock);
+
 
 	return 0;
 }
@@ -213,8 +213,9 @@ void destroyBuffer(Buffer * buffer, SRWLOCK *srwLock)
 char * parseMessage(char * data)
 {
 	int nameSize = DataNameSize(data);
-
+	
 	char* name = (char *)malloc(sizeof(char)*nameSize);
+	memset(name, 0, nameSize+1);
 	memcpy(name, data + 8, nameSize); //kopiraj kraj starog bufera u novi 
 	return name;
 
@@ -335,20 +336,24 @@ void initializeQueue(Queue * queue, int size, SRWLOCK *srwLock)
 {
 	AcquireSRWLockExclusive(srwLock);
 	queue->count = 0;
-	queue->size = 0;
+	queue->size = size;
 	queue->buffer = (Buffer *)malloc(sizeof(Buffer) * size);
 	memset(queue->buffer, NULL, size);
 	ReleaseSRWLockExclusive(srwLock);
 }
 
-void findBuffer(Queue * queue, Buffer * buffer, char * name)
+Buffer * findBuffer(Queue * queue, char * name)
 {
 	for (int i = 0; i < queue->count; i++) {
 		if (strcmp(queue->buffer[i].name, name) == 0) {
-			buffer = &queue->buffer[i];
-			return;
+			
+			//free(name);		//oslobadjamo ime koje smo malloc u funkciji parseMessage
+			// HEAP CORRUPTION .
+
+			return &queue->buffer[i];
 		}
 	}
+	return NULL;
 }
 
 /* QUEUE IMPLEMENTATION */

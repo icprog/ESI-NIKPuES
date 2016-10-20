@@ -1,10 +1,4 @@
-﻿  stdafx.cpp
-  util.cpp
+﻿  util.cpp
 c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\socketnonblocking\util.cpp(1): warning C4627: '#include "util.h"': skipped when looking for precompiled header use
   c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\socketnonblocking\util.cpp(1): note: Add directive to 'stdafx.h' or rebuild precompiled header
-  test.cpp
-c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\socketnonblocking\test.cpp(1): warning C4627: '#include "util.h"': skipped when looking for precompiled header use
-  c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\socketnonblocking\test.cpp(1): note: Add directive to 'stdafx.h' or rebuild precompiled header
-  socketNB.cpp
-  Generating Code...
   SocketNonBlocking.vcxproj -> C:\Users\RA4-2012\Documents\ESI-NIKPuES\WinSock_TCP_Blocking\Debug\SocketNonBlocking.lib

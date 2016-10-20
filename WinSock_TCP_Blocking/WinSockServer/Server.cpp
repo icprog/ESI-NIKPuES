@@ -9,7 +9,7 @@
 
 
 #define DEFAULT_BUFLEN 512
-#define INITIAL_QUEUE_SIZE 512
+#define INITIAL_QUEUE_SIZE 10
 #define DEFAULT_PORT "27016"
 #define SOCKET_ARRAY_INITIAL_SIZE 10
 #define THREAD_ARRAY_SIZE 6
@@ -29,11 +29,64 @@ typedef struct receiveThreadParam {
 
 bool InitializeWindowsSockets();
 
+
+DWORD WINAPI ReceiveThread(LPVOID lpParam) {
+	printf("\n Usao sam u thread za obradu!\n");
+	int iResult = 0;
+	SOCKET acceptedSocket = *((ReceiveThreadParam*)lpParam)->acceptedSocket;
+	Queue queue = *((ReceiveThreadParam*)lpParam)->queue;
+	SRWLOCK srwLock = *((ReceiveThreadParam*)lpParam)->srwLock;
+	char recvbuf[DEFAULT_BUFLEN];
+	memset(recvbuf, 0, DEFAULT_BUFLEN);
+	printf("\n Pokusacu da obradim zahtev!\n");
+	do
+	{
+		// Receive data until the client shuts down the connection
+		//iResult = recv(acceptedSocket, recvbuf, DEFAULT_BUFLEN, 0);
+		iResult = RECEIVE(acceptedSocket, recvbuf);
+		//recvbuf je data!!!
+		printf("\nIresult = %d!\n", iResult);
+		if (iResult > 0)
+		{
+			//uzmemo ime iz poruke
+			char * name;
+			name = parseMessage(recvbuf);
+			printf("\niResult je veci od nule, ocigledno!");
+			//pronadjemo bufer koji nam treba
+			Buffer * buffer=findBuffer(&queue, name);
+			
+
+			add(buffer, recvbuf, &srwLock); //punimo bafer
+
+			printf("Message received from client: %s.\n", recvbuf);
+
+		}
+		else if (iResult == 0)
+		{
+			// connection was closed gracefully
+			printf("Connection with client closed.\n");
+			//closesocket(acceptedSocket);
+		}
+		else
+		{
+			// there was an error during recv
+			printf("recv failed with error: %d\n", WSAGetLastError());
+			closesocket(acceptedSocket);
+		}
+	} while (iResult > 0);
+
+	// here is where server shutdown loguc could be placed
+
+	return 0;
+}
+
+
 /* Funkcija programske niti zaduzene za cekanje na klijenta.*/
 DWORD WINAPI clientWaitingThreadFunc(LPVOID param) {
 	CL_PARAMS* clParams = (CL_PARAMS*)param;
 	SRWLOCK srwLock;
-	InitializeSRWLock(&srwLock);
+	//InitializeSRWLock(&srwLock);
+	//ReleaseSRWLockExclusive(&srwLock);
 	// ARRAY OF THREAD HANDLES
 	//HANDLE threadArray[THREAD_ARRAY_SIZE];
 	//memset(threadArray, NULL, clParams->queue->count);
@@ -137,18 +190,18 @@ DWORD WINAPI clientWaitingThreadFunc(LPVOID param) {
 				iResult = ioctlsocket(socketArray[i], FIONBIO, &nonBlockingMode);
 				FD_SET set;
 				timeval timeVal;
-
+				
 				do{
 					FD_ZERO(&set);
 					// Add socket we will wait to read from
-					FD_SET(socketArray[i], &set);
+					FD_SET(listenSocket, &set);
 
 					// Set timeouts to zero since we want select to return
 					// instantaneously
 					timeVal.tv_sec = 0;
 					timeVal.tv_usec = 0;
 
-					iResult = select(0 /* ignored */, NULL, &set, NULL, &timeVal);
+					iResult = select(0 /* ignored */, &set, NULL, NULL, &timeVal);
 
 					// lets check if there was an error during select
 					if (iResult == SOCKET_ERROR)
@@ -160,12 +213,14 @@ DWORD WINAPI clientWaitingThreadFunc(LPVOID param) {
 					// now, lets check if there are any sockets ready
 					if (iResult == 0)
 					{
+						printf("\n SPAVAM! ");
 						// there are no ready sockets, sleep for a while and check again
 						Sleep(200);
 					}
-				} while (iResult == 0);
 
-				socketArray[i] = accept(listenSocket, NULL, NULL);
+				} while (iResult == 0);
+				
+				socketArray[i] = accept(listenSocket, NULL, NULL); /////////////////
 
 				if (socketArray[i] == INVALID_SOCKET)
 				{
@@ -174,28 +229,29 @@ DWORD WINAPI clientWaitingThreadFunc(LPVOID param) {
 					WSACleanup();
 					return 1;
 				}
-
+				printf("\n KLIJENT JE PRIHVACEN!\n");
 				// OKIDA THREAD ZA RECEIVE
-
+				//ReleaseSRWLockExclusive(&srwLock);
 				ReceiveThreadParam rtParam;
 				rtParam.acceptedSocket = &socketArray[i];
 				rtParam.queue = clParams->queue;
 				rtParam.srwLock = &srwLock;
 				HANDLE receiveThread;
 				DWORD receiveThreadID;
-				receiveThread = CreateThread(0, 0, NULL, &rtParam, 0, &receiveThreadID);
+				printf("\n Okidam nit za obradu!\n");
+				receiveThread = CreateThread(0, 0, &ReceiveThread, &rtParam, 0, &receiveThreadID);
 				WaitForSingleObject(receiveThread, INFINITE);
-
+				printf("\n Zahtev obradjen!\n");
 				// shutdown the connection since we're done
-				iResult = shutdown(socketArray[i], SD_SEND);
-				if (iResult == SOCKET_ERROR)
-				{
-					printf("shutdown failed with error: %d\n", WSAGetLastError());
-					closesocket(socketArray[i]);
-					WSACleanup();
-					return 1;
-				}
-				closesocket(socketArray[i]);
+				//iResult = shutdown(socketArray[i], SD_SEND);
+			//	if (iResult == SOCKET_ERROR)
+			//	{
+			//		printf("shutdown failed with error: %d\n", WSAGetLastError());
+			//		closesocket(socketArray[i]);
+					//WSACleanup();
+					//return 1;
+			//	}
+				//closesocket(socketArray[i]);
 				CloseHandle(receiveThread);
 				socketArray[i] = INVALID_SOCKET;
 				break;
@@ -216,56 +272,6 @@ DWORD WINAPI clientWaitingThreadFunc(LPVOID param) {
 	WSACleanup();
 }
 
-DWORD WINAPI ReceiveThread(LPVOID lpParam) {
-
-	int iResult = 0;
-	SOCKET acceptedSocket = *((ReceiveThreadParam*)lpParam)->acceptedSocket;
-	Queue queue = *((ReceiveThreadParam*)lpParam)->queue;
-	SRWLOCK srwLock = *((ReceiveThreadParam*)lpParam)->srwLock;
-	char recvbuf[DEFAULT_BUFLEN];
-	memset(recvbuf, 0, DEFAULT_BUFLEN);
-
-	do
-	{
-		// Receive data until the client shuts down the connection
-		//iResult = recv(acceptedSocket, recvbuf, DEFAULT_BUFLEN, 0);
-		iResult = RECEIVE(acceptedSocket, recvbuf);
-		//recvbuf je data!!!
-
-		if (iResult > 0)
-		{
-			//uzmemo ime iz poruke
-			char * name;
-			name = parseMessage(recvbuf);
-
-			//pronadjemo bufer koji nam treba
-			Buffer * buffer;
-			findBuffer(&queue, buffer, name);
-			free(name);		//oslobadjamo ime koje smo malloc u funkciji parseMessage
-
-			add(buffer, recvbuf, &srwLock); //punimo bafer
-
-			printf("Message received from client: %s.\n", recvbuf);
-
-		}
-		else if (iResult == 0)
-		{
-			// connection was closed gracefully
-			printf("Connection with client closed.\n");
-			closesocket(acceptedSocket);
-		}
-		else
-		{
-			// there was an error during recv
-			printf("recv failed with error: %d\n", WSAGetLastError());
-			closesocket(acceptedSocket);
-		}
-	} while (iResult > 0);
-
-	// here is where server shutdown loguc could be placed
-
-	return 0;
-}
 
 
 int  main(void) 
@@ -318,6 +324,8 @@ int  main(void)
 	Queue queue;
 	initializeQueue(&queue, INITIAL_QUEUE_SIZE, &srwLock);
 	queue.buffer = bufferArray;
+	queue.count = 6;
+
 
 	printf("\nOva aplikacija ce se ponasati kao: ");
 	if (answer == CLIENT){
@@ -356,7 +364,7 @@ int  main(void)
 		// create and initialize address structure
 		sockaddr_in serverAddress;
 		serverAddress.sin_family = AF_INET;
-		serverAddress.sin_addr.s_addr = inet_addr("192.168.101.110");
+		serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 		serverAddress.sin_port = htons(27016);
 		// connect to server specified in serverAddress and socket connectSocket
 		while (connect(connectSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR)

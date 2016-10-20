@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <conio.h>
 //#include "C:/Users/ra64-2012/Desktop/Blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
-
+#include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h"
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT 27016
 

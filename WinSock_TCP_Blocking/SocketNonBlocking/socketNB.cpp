@@ -58,7 +58,7 @@ int sendNB(SOCKET socket,  char* buffer, int bufferLength){
 
 int SEND(SOCKET socket, char* buffer){
 	int i = 0;
-	int len = 15;
+	int len = bufferLength(buffer);
 	int iResult;
 	while (i < len){
 		do {
@@ -77,7 +77,7 @@ int SEND(SOCKET socket, char* buffer){
 }
 
 
-int receiveNB(SOCKET socket, char* buffer, int bufferLength){
+int receiveNB(SOCKET socket, char* buffer, int bufferLength, int continueFrom){
 	int iResult, i = 0;
 	int sockAddrLen = sizeof(struct sockaddr);
 	FD_SET set;
@@ -111,7 +111,7 @@ int receiveNB(SOCKET socket, char* buffer, int bufferLength){
 
 
 		// Receive data until the client shuts down the connection
-		iResult = recv(socket, buffer, bufferLength, 0);
+		iResult = recv(socket, buffer+continueFrom, bufferLength, 0);
 		if (iResult > 0)
 		{
 			printf("Message received from client: %s.\n", buffer);
@@ -121,6 +121,7 @@ int receiveNB(SOCKET socket, char* buffer, int bufferLength){
 			// connection was closed gracefully
 			printf("Connection with client closed.\n");
 			closesocket(socket);
+			return 0;
 		}
 		else
 		{
@@ -136,11 +137,15 @@ int receiveNB(SOCKET socket, char* buffer, int bufferLength){
 
 int RECEIVE(SOCKET socket, char* buffer) {
 	int i = 0;
-	int len = 15;
+	int len;
 	int iResult;
-	while (i < len) {
+	char *duzina = (char *)malloc(sizeof(char) * 4);
+	memset(duzina, 0, 4);
+	while (i < 4) {
 		do {
-			iResult = receiveNB(socket, buffer, len - i);
+			iResult = receiveNB(socket, duzina, 4 - i, 0);
+			if (iResult == 0)  // konekcija je zatvorena, nema potrebe raditi ista dalje
+				return 0;
 		} while (iResult == SLEEP);
 		if (iResult == SOCKET_ERROR)
 		{
@@ -151,5 +156,22 @@ int RECEIVE(SOCKET socket, char* buffer) {
 		}
 		i += iResult;
 	}
-	return SUCCESS; // success code: 0
+	len = *(int*)duzina;
+	i = 4;
+	*(int*)buffer = len;
+	iResult = 0;
+	while (i < len) {
+		do {
+			iResult = receiveNB(socket, buffer, len - i, i);
+		} while (iResult == SLEEP);
+		if (iResult == SOCKET_ERROR)
+		{
+			printf("sendto failed with error: %d\n", WSAGetLastError());
+			closesocket(socket);
+			WSACleanup();
+			return CONN_ERR; // connection error code: 2
+		}
+		i += iResult;
+	}
+	return i; // success code: 0
 }

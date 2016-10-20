@@ -34,5 +34,5 @@ void removeBuffer(Queue *queue, Buffer *buffer, SRWLOCK *srwLock);
 void clearQueue(Queue *queue, SRWLOCK *srwLock);
 void expandQueue(Queue *queuek);
 void initializeQueue(Queue *queue, int size, SRWLOCK *srwLock);
-void findBuffer(Queue * queue, Buffer * buffer, char * name);
+Buffer * findBuffer(Queue * queue, char * name);
 /* QUEUE INTERFACE */
