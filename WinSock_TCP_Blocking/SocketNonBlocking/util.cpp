@@ -18,7 +18,10 @@ typedef struct queue {
 	int size;
 }Queue;
 
-
+/*
+//SRWLOCK srwLock;
+//InitializeSRWLock(&srwLock);
+*/
 /* CIRCULAR BUFFER IMPLEMENTATION */
 
 
@@ -67,8 +70,11 @@ void expand(Buffer * buffer)
 }
 
 
-int add(Buffer *buffer, char * data)
+int add(Buffer *buffer, char * data, SRWLOCK *srwLock)
 {
+
+	AcquireSRWLockExclusive(srwLock);
+
 	int sizeOfData = dataSize(data);
 
 	// ako je bafer vec pun count == size, radi prosirivanje, ali prvo utvrdi za koliko puta
@@ -106,7 +112,9 @@ int add(Buffer *buffer, char * data)
 			buffer->pushIdx = 0;
 	}
 	*/
-	
+	ReleaseSRWLockExclusive(srwLock);
+
+	AcquireSRWLockShared(srwLock);
 	/*debug output*/
 	printf("\nSadrzaj bafera: ");
 	for (int i = 0; i < buffer->size; i++) {
@@ -118,14 +126,14 @@ int add(Buffer *buffer, char * data)
 	printf("Count: %d\n", buffer->count);
 	printf("Size: %d\n", buffer->size);
 	/*end of debut output*/
-	
+	ReleaseSRWLockShared(srwLock);
 
 	return 0;
 }
 
-void shrink(Buffer * buffer)
+void shrink(Buffer * buffer, SRWLOCK *srwLock)
 {
-
+	AcquireSRWLockExclusive(srwLock);
 	int rest = buffer->size - buffer->popIdx;
 	double fullness = buffer->count / buffer->size;
 
@@ -169,15 +177,15 @@ void shrink(Buffer * buffer)
 		buffer->pushIdx = buffer->count;
 		buffer->popIdx = 0;
 
-
+		ReleaseSRWLockExclusive(srwLock);
 
 	}
 
 }
 
-void createBuffer(Buffer * buffer, char * name, int bufferLength)
+void createBuffer(Buffer * buffer, char * name, int bufferLength, SRWLOCK *srwLock)
 {
-
+	AcquireSRWLockExclusive(srwLock);
 	buffer->name = name;
 	buffer->count = 0;
 	buffer->popIdx = 0;
@@ -185,20 +193,33 @@ void createBuffer(Buffer * buffer, char * name, int bufferLength)
 	buffer->size = bufferLength;
 	buffer->data = (char *)malloc(sizeof(char) * bufferLength + 1);
 	memset(buffer->data, 0, bufferLength);
+	ReleaseSRWLockExclusive(srwLock);
 }
 
-void destroyBuffer(Buffer * buffer)
+void destroyBuffer(Buffer * buffer, SRWLOCK *srwLock)
 {
+	AcquireSRWLockExclusive(srwLock);
 	free(buffer->data);
 	buffer->popIdx = -1;
 	buffer->pushIdx = -1;
 	buffer->count = -1;
 	buffer->size = -1;
 	buffer = NULL;
+	ReleaseSRWLockExclusive(srwLock);
 }
-
-int remove(Buffer * buffer, char * data)
+char * parseMessage(char * data)
 {
+	int nameSize = DataNameSize(data);
+
+	char* name = (char *)malloc(sizeof(char)*nameSize);
+	memcpy(name, data + 8, nameSize); //kopiraj kraj starog bufera u novi 
+	return name;
+
+	//oslobodi niz
+}
+int remove(Buffer * buffer, char * data, SRWLOCK *srwLock)
+{
+	AcquireSRWLockExclusive(srwLock);
 	//ako se poklapaju pop i pushIdx, nemamo podataka
 	/*if (buffer->popIdx == buffer->pushIdx) {
 		return -1; //vrati gresku
@@ -238,7 +259,9 @@ int remove(Buffer * buffer, char * data)
 	}*/
 
 	buffer->count -= velicina;
+	ReleaseSRWLockExclusive(srwLock);
 	/*debug output*/
+	AcquireSRWLockShared(srwLock);
 	printf("\nSadrzaj bafera: ");
 	for (int i = 0; i < buffer->size; i++) {
 		printf("%c", buffer->data[i]);
@@ -248,6 +271,7 @@ int remove(Buffer * buffer, char * data)
 	printf("PushIdx: %d\n", buffer->pushIdx);
 	printf("Count: %d\n", buffer->count);
 	printf("Size: %d\n", buffer->size);
+	ReleaseSRWLockShared(srwLock);
 	/*end of debut output*/
 	return 0;
 }
@@ -264,48 +288,64 @@ void expandQueue(Queue * queue)
 	queue->buffer = newArray;
 }
 
-void addBuffer(Queue * queue, Buffer * buffer)
+void addBuffer(Queue * queue, Buffer * buffer, SRWLOCK *srwLock)
 {
+	AcquireSRWLockExclusive(srwLock);
 	if (queue->count == queue->size)
 		expandQueue(queue);
 
 	queue->buffer[queue->count] = *buffer;
 
 	queue->count++;
+	ReleaseSRWLockExclusive(srwLock);
 }
 
-void removeBuffer(Queue * queue, Buffer * buffer)
+void removeBuffer(Queue * queue, Buffer * buffer, SRWLOCK *srwLock)
 {
+	AcquireSRWLockExclusive(srwLock);
 	//smanji count i prolazi kroz sve elemente niza i obrisi bafer sa yadatim imenom
 	queue->count--;
 
 	for (int i = 0; i < queue->count; i++) {
 		if (strcmp(queue->buffer[i].name, buffer->name) == 0) {
-			destroyBuffer(&(queue->buffer[i]));
+			destroyBuffer(&(queue->buffer[i]), srwLock);
 			break;
 		}
 	}
+	ReleaseSRWLockExclusive(srwLock);
 }
 
-void clearQueue(Queue * queue)
+void clearQueue(Queue * queue, SRWLOCK *srwLock)
 {
+	AcquireSRWLockExclusive(srwLock);
 	//prodji kroz sve elemente reda i obrisi ih
 	for (int i = 0; i < queue->count; i++) {
-		destroyBuffer(&(queue->buffer[i]));
+		destroyBuffer(&(queue->buffer[i]), srwLock);
 		break;
 	}
+	ReleaseSRWLockExclusive(srwLock);
 }
 
 
 
-void initializeQueue(Queue * queue, int size)
+void initializeQueue(Queue * queue, int size, SRWLOCK *srwLock)
 {
+	AcquireSRWLockExclusive(srwLock);
 	queue->count = 0;
 	queue->size = 0;
 	queue->buffer = (Buffer *)malloc(sizeof(Buffer) * size);
 	memset(queue->buffer, NULL, size);
+	ReleaseSRWLockExclusive(srwLock);
 }
 
-
+void findBuffer(Queue * queue, Buffer * buffer, char * name)
+{
+	for (int i = 0; i < queue->count; i++) {
+		if (strcmp(queue->buffer[i].name, name) == 0) {
+			buffer = &queue->buffer[i];
+			return;
+		}
+	}
+}
 
 /* QUEUE IMPLEMENTATION */

@@ -12,12 +12,12 @@ typedef struct buffer {
 } Buffer;
 
 void expand(Buffer *buffer);					          // expand the buffer size
-int add(Buffer *buffer, char *data);					  // adding data to the buffer
-int remove(Buffer *buffer, char *data);					  // removing data from the buffer
-void shrink(Buffer *buffer);							  // shrink the buffer size when it's fulness is less or equal 25%
-void createBuffer(Buffer *buffer, char *name, int bufferLength);		  // create buffer
-void destroyBuffer(Buffer *buffer);						  // destroy buffe
-
+int add(Buffer *buffer, char *data, SRWLOCK *srwLock);					  // adding data to the buffer
+int remove(Buffer *buffer, char *data, SRWLOCK *srwLock);					  // removing data from the buffer
+void shrink(Buffer *buffer, SRWLOCK *srwLock);							  // shrink the buffer size when it's fulness is less or equal 25%
+void createBuffer(Buffer *buffer, char *name, int bufferLength, SRWLOCK *srwLock);		  // create buffer
+void destroyBuffer(Buffer *buffer, SRWLOCK *srwLock);						  // destroy buffe
+char* parseMessage(char *data);						  //parse Mesage, get buffer name
 /* CIRCULAR BUFFER INTERFACE */
 
 
@@ -28,9 +28,10 @@ typedef struct queue {
 	int size;
 }Queue;
 
-void addBuffer(Queue *queue, Buffer *buffer);          //queue je niz, a buffer je pokazivac na buffer
-void removeBuffer(Queue *queue, Buffer *buffer);
-void clearQueue(Queue *queue);
-void expandQueue(Queue *queue);
-void initializeQueue(Queue *queue, int size);
+void addBuffer(Queue *queue, Buffer *buffer, SRWLOCK *srwLock);          //queue je niz, a buffer je pokazivac na buffer
+void removeBuffer(Queue *queue, Buffer *buffer, SRWLOCK *srwLock);
+void clearQueue(Queue *queue, SRWLOCK *srwLock);
+void expandQueue(Queue *queuek);
+void initializeQueue(Queue *queue, int size, SRWLOCK *srwLock);
+void findBuffer(Queue * queue, Buffer * buffer, char * name);
 /* QUEUE INTERFACE */
