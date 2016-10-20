@@ -1,18 +1,13 @@
 ﻿  Server.cpp
-c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(49): warning C4101: 'recvbuf': unreferenced local variable
-c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(284): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(50): warning C4101: 'recvbuf': unreferenced local variable
+c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(285): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1270): note: see declaration of 'scanf'
-c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(331): warning C4477: 'scanf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'char **'
-c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(331): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(332): warning C4477: 'scanf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'char **'
+c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(332): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1270): note: see declaration of 'scanf'
-c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(333): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(334): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1270): note: see declaration of 'scanf'
-c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(358): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(359): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
   c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1850): note: see declaration of 'inet_addr'
-c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(242): warning C4700: uninitialized local variable 'buffer' used
-Server.obj : error LNK2019: unresolved external symbol "int __cdecl add(struct buffer *,char *,struct _RTL_SRWLOCK *)" (?add@@YAHPAUbuffer@@PADPAU_RTL_SRWLOCK@@@Z) referenced in function "unsigned long __stdcall ReceiveThread(void *)" (?ReceiveThread@@YGKPAX@Z)
-Server.obj : error LNK2019: unresolved external symbol "void __cdecl createBuffer(struct buffer *,char *,int,struct _RTL_SRWLOCK *)" (?createBuffer@@YAXPAUbuffer@@PADHPAU_RTL_SRWLOCK@@@Z) referenced in function _main
-Server.obj : error LNK2019: unresolved external symbol "char * __cdecl parseMessage(char *)" (?parseMessage@@YAPADPAD@Z) referenced in function "unsigned long __stdcall ReceiveThread(void *)" (?ReceiveThread@@YGKPAX@Z)
-Server.obj : error LNK2019: unresolved external symbol "void __cdecl initializeQueue(struct queue *,int,struct _RTL_SRWLOCK *)" (?initializeQueue@@YAXPAUqueue@@HPAU_RTL_SRWLOCK@@@Z) referenced in function _main
-Server.obj : error LNK2019: unresolved external symbol "void __cdecl findBuffer(struct queue *,struct buffer *,char *)" (?findBuffer@@YAXPAUqueue@@PAUbuffer@@PAD@Z) referenced in function "unsigned long __stdcall ReceiveThread(void *)" (?ReceiveThread@@YGKPAX@Z)
-C:\Users\RA4-2012\Documents\ESI-NIKPuES\WinSock_TCP_Blocking\Debug\QueueingServiceServer.exe : fatal error LNK1120: 5 unresolved externals
+c:\users\ra4-2012\documents\esi-nikpues\winsock_tcp_blocking\winsockserver\server.cpp(243): warning C4700: uninitialized local variable 'buffer' used
+  WinSockServer.vcxproj -> C:\Users\RA4-2012\Documents\ESI-NIKPuES\WinSock_TCP_Blocking\Debug\QueueingServiceServer.exe

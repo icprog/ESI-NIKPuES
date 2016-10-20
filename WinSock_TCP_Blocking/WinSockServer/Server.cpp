@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <Windows.h>
-#include <conio.h>
+
 //#include "C:/Users/ra64-2012/Desktop/Blok1/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h" //davor
 #include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/socketNB.h"
 #include "C:/Users/RA4-2012/Documents/ESI-NIKPuES/WinSock_TCP_Blocking/SocketNonBlocking/util.h"
+
+
 #define DEFAULT_BUFLEN 512
 #define INITIAL_QUEUE_SIZE 512
 #define DEFAULT_PORT "27016"
