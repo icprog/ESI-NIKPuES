@@ -1,6 +1,0 @@
-﻿  stdafx.cpp
-  BufferTest.cpp
-  LINK : C:\Users\ra64-2012\Desktop\Blok1\ESI-NIKPuES\WinSock_TCP_Blocking\Debug\BufferTest.exe not found or not built by the last incremental link; performing full link
-SocketNonBlocking.lib(stdafx.obj) : warning LNK4020: a type record in 'c:\users\ra64-2012\desktop\blok1\esi-nikpues\winsock_tcp_blocking\debug\SocketNonBlocking.pdb' is corrupted; some symbols and types may not be accessible from the debugger
-SocketNonBlocking.lib(util.obj) : warning LNK4020: a type record in 'c:\users\ra64-2012\desktop\blok1\esi-nikpues\winsock_tcp_blocking\debug\SocketNonBlocking.pdb' is corrupted; some symbols and types may not be accessible from the debugger
-  BufferTest.vcxproj -> C:\Users\ra64-2012\Desktop\Blok1\ESI-NIKPuES\WinSock_TCP_Blocking\Debug\BufferTest.exe

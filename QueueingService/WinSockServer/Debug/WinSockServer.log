@@ -1,0 +1,3 @@
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (WinSockServer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  WinSockServer.vcxproj -> C:\Users\mihailo\Dropbox\Documents\QueueingService\Debug\Server.exe
+  WinSockServer.vcxproj -> C:\Users\mihailo\Dropbox\Documents\QueueingService\Debug\Server.pdb (Full PDB)
