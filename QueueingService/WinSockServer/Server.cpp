@@ -113,11 +113,11 @@ void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue
 	csParams.queue = queue;
 	csParams.socketArray = socketArray;
 	csParams.threadArray = threadArray;
-	//threadArray->threads[1] = CreateThread(NULL, 0, NULL, NULL/* IZMENITI */, 0, &serviceID);
+	threadArray->threads[1] = CreateThread(NULL, 0, &ServerServerThread, &csParams/* IZMENITI */, 0, &serviceID);
 
 	threadArray->threads[0] = CreateThread(NULL, 0, &ClientServerThread, &csParams, 0, &clientID);
-	WaitForSingleObject(threadArray->threads[0], INFINITE);
-
+	//WaitForSingleObject(threadArray->threads[0], INFINITE);
+	Sleep(INFINITE);
 	/*
 	while (1) {
 		threadArray->threads[2] = CreateThread(NULL, 0, &GarbageCollector, &csParams/* IZMENITI , 0, &gcID);

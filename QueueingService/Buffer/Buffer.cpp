@@ -199,7 +199,7 @@ int pop(Buffer * buffer, char * data)
 {
 	EnterCriticalSection(&buffer->cs);
 
-	int velicina = dataSize(data);
+	int velicina = dataSize(buffer->data);
 
 	if (buffer->count == 0) {
 		return 0;

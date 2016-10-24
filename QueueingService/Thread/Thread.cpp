@@ -36,7 +36,7 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 			char c = getCharacter(recvbuf, &cs);
 			if (c == 'c') {
 				DeleteCriticalSection(&cs);
-				return;
+				return -1;
 			}
 			// return;
 			DeleteCriticalSection(&cs);
@@ -144,7 +144,7 @@ DWORD WINAPI PopFromService(LPVOID lpParam)
 		if (queue->buffer[i].count > 0) {
 			for (int j = 0; j < socketArray->size; j++) {
 				if (socketArray->sockets[i].bufferName != NULL && socketArray->sockets[i].socket != INVALID_SOCKET) {
-					if (strcmp(strcat(socketArray->sockets[i].bufferName, "1"), queue->buffer[i].name) == 0) {
+					if (strcmp(socketArray->sockets[i].bufferName, queue->buffer[i].name) == 0) {
 
 						char *recvbuf = (char *)malloc(sizeof(char) * queue->buffer[i].size);
 						pop(&queue->buffer[i], recvbuf);

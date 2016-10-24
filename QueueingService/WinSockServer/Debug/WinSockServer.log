@@ -1,3 +1,18 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (WinSockServer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  WinSockServer.vcxproj -> C:\Users\mihailo\Dropbox\Documents\QueueingService\Debug\Server.exe
-  WinSockServer.vcxproj -> C:\Users\mihailo\Dropbox\Documents\QueueingService\Debug\Server.pdb (Full PDB)
+  Server.cpp
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\winsockserver\server.cpp(4): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\winsockserver\server.cpp(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\queue\stdafx.h(15): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\winsockserver\server.cpp(6): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\winsockserver\server.cpp(7): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\socketarray\stdafx.h(15): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\winsockserver\server.cpp(8): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\thread\stdafx.h(16): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\thread\stdafx.h(17): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\thread\stdafx.h(18): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\thread\stdafx.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\thread\stdafx.h(20): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\threadarray\stdafx.h(16): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\winsockserver\server.cpp(9): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\winsockserver\server.cpp(110): warning C4101: 'gcID': unreferenced local variable
+  WinSockServer.vcxproj -> C:\Users\ra64-2012\Desktop\24.10\ESI-NIKPuES\QueueingService\Debug\Server.exe
