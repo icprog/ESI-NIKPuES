@@ -1,3 +1,3 @@
 ﻿  Thread.cpp
-c:\users\ra64-2012\desktop\24.10\esi-nikpues\queueingservice\thread\thread.cpp(382): warning C4101: 'recvbuf': unreferenced local variable
-  Thread.vcxproj -> C:\Users\ra64-2012\Desktop\24.10\ESI-NIKPuES\QueueingService\Debug\Thread.lib
+c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\thread.cpp(381): warning C4101: 'recvbuf': unreferenced local variable
+  Thread.vcxproj -> C:\Users\RA4-2012\Desktop\test\ESI-NIKPuES\QueueingService\Debug\Thread.lib

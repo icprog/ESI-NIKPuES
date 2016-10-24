@@ -107,7 +107,6 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 			}
 
 			// connection was closed gracefully
-			printf("Thread: %d", GetCurrentThreadId());
 			printf("Connection with client closed.\n");
 			closesocket(acceptedSocket->socket);
 			acceptedSocket->socket = INVALID_SOCKET;
