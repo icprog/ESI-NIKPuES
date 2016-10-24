@@ -106,15 +106,15 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 
 int __cdecl main(int argc, char **argv)
 {
-	HANDLE sendThread[3];
+	HANDLE sendThread[1];
 	DWORD sendThreadID;
 
 	// socket used to communicate with server
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 1; i++) {
 		printf("\n Okidam nit za obradu: %d\n", i);
 		sendThread[i] = CreateThread(0, 0, &sendThreadFunc, 0, 0, &sendThreadID);
 	}
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 1; i++) {
 		printf("Radi mi nit za obradu: %d", i);
 		WaitForSingleObject(sendThread[i], INFINITE);
 		CloseHandle(sendThread[i]);;

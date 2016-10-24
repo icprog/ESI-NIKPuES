@@ -5,11 +5,17 @@
 	Struktura za parametre ClientServerThread.
 */
 typedef struct csParams {
-	ThreadArray *threadArray;
-	SocketArray *socketArray;
-	Queue *queue;
-	SOCKET *serviceSocket;
+	ThreadArray *threadArray = NULL;
+	SocketArray *socketArray = NULL;
+	Queue *queue = NULL;
+	SOCKET *serviceSocket = NULL;
+	int odgovor = -1;
 }CSParams;
+
+typedef struct ssParams {
+	SOCKET *serviceSocket = NULL;
+	int odgovor = -1;
+}SSParams;
 
 /*
 Struktura za parametre PushInService

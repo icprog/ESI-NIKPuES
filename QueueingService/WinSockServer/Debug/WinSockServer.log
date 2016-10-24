@@ -1,25 +1,2 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (WinSockServer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Server.cpp
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(4): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\queue\stdafx.h(15): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(6): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(7): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\socketarray\stdafx.h(15): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(8): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\stdafx.h(16): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\stdafx.h(17): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\stdafx.h(18): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\stdafx.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\stdafx.h(20): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\threadarray\stdafx.h(16): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(9): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(176): warning C4309: '=': truncation of constant value
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(245): warning C4309: '=': truncation of constant value
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(34): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1270): note: see declaration of 'scanf'
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(276): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-  c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1850): note: see declaration of 'inet_addr'
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(412): warning C4101: 'serviceID': unreferenced local variable
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\winsockserver\server.cpp(412): warning C4101: 'gcID': unreferenced local variable
   WinSockServer.vcxproj -> C:\Users\RA4-2012\Desktop\test\ESI-NIKPuES\QueueingService\Debug\Server.exe

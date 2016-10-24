@@ -1,3 +1,4 @@
 ﻿  Thread.cpp
-c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\thread.cpp(381): warning C4101: 'recvbuf': unreferenced local variable
+c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\thread.cpp(506): warning C4309: '=': truncation of constant value
+c:\users\ra4-2012\desktop\test\esi-nikpues\queueingservice\thread\thread.cpp(573): warning C4309: '=': truncation of constant value
   Thread.vcxproj -> C:\Users\RA4-2012\Desktop\test\ESI-NIKPuES\QueueingService\Debug\Thread.lib
