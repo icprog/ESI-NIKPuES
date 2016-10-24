@@ -17,6 +17,7 @@ typedef struct pushParams {
 	MySocket *socket;
 	Queue *queue;
 	CRITICAL_SECTION *cs;
+	int initializator; // kome treba poslati odgovor : 0-Server, 1-Klijent
 }PushParams;
 
 /*

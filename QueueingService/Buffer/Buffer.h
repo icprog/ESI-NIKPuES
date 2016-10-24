@@ -19,3 +19,4 @@ void createBuffer(Buffer *buffer, char *name, int bufferLength, CRITICAL_SECTION
 void destroyBuffer(Buffer *buffer);
 int DataNameSize(char * data);
 char* parseMessage(char *data, CRITICAL_SECTION *cs);						  //parse Mesage, get buffer name
+char getCharacter(char * data, CRITICAL_SECTION *cs);

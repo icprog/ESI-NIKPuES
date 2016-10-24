@@ -19,6 +19,16 @@ int dataSize(char * data) {
 int DataNameSize(char * data) {
 	return *((int*)data + 1);
 }
+char getCharacter(char * data, CRITICAL_SECTION *cs)
+{
+	EnterCriticalSection(cs);
+	char c;
+	c = *data;
+	LeaveCriticalSection(cs);
+	return c;
+
+	//oslobodi niz
+}
 
 char * parseMessage(char * data, CRITICAL_SECTION *cs)
 {
