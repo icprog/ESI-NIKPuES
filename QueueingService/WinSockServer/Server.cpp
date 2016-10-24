@@ -9,13 +9,13 @@
 #include "../ThreadArray/ThreadArray.h";
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27018"
+#define DEFAULT_PORT "27017"
 #define DEFAULT_SOCARRLEN 10
 #define DEFAULT_THREADARRLEN 10
 #define INITIAL_QUEUE_SIZE 10
 void createQueue(Queue *queue);
 void createSocketArray(SocketArray *socketArray);
-void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue *queue);
+void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue *queue, SOCKET *serviceSocket);
 bool InitializeWindowsSockets();
 int  main(void) 
 {
@@ -33,7 +33,7 @@ int  main(void)
 		printf("\n>(Unesite 1 ili 2) ");
 		scanf("%d", &odgovor);
 	} while (odgovor != 1 && odgovor != 2);
-
+	SOCKET *serviceSocket;
 	if (odgovor == 1) {
 		printf("\n Ovaj servis je server.\n Cekam klijenta da inicira komunikaciju...");
 
@@ -171,7 +171,16 @@ int  main(void)
 
 					// Send an prepared message with null terminator included
 					char *messageToSend = " Uspostavljena konekcija sa klijentom...";
-					iResult = SEND(&acceptedSocket, messageToSend);
+					char *data = (char *)malloc(sizeof(char) * 160);
+					memset(data, 0, 160);
+					data[0] = 160;
+
+					*(char*)((int *)data + 1) = 4;
+					char *ime = "RED1";
+
+					memcpy(data + 8, ime, 4);
+					memcpy(data + 12, messageToSend, 160);
+					iResult = SEND(&acceptedSocket, data);
 
 					if (iResult == SOCKET_ERROR)
 					{
@@ -181,8 +190,8 @@ int  main(void)
 						return 1;
 					}
 
-
-
+					// TODO: Naci gde zatvoriti ovaj accepted socekt
+					serviceSocket = &acceptedSocket;
 
 
 				}
@@ -205,14 +214,15 @@ int  main(void)
 		} while (1);
 
 		// shutdown the connection since we're done
-		iResult = shutdown(acceptedSocket, SD_SEND);
+		//iResult = shutdown(acceptedSocket, SD_SEND);
+		/*
 		if (iResult == SOCKET_ERROR)
 		{
 			printf("shutdown failed with error: %d\n", WSAGetLastError());
 			closesocket(acceptedSocket);
 			WSACleanup();
 			return 1;
-		}
+		}*/
 
 		// cleanup
 		//closesocket(listenSocket);
@@ -229,7 +239,16 @@ int  main(void)
 		int iResult;
 		// message to send
 		char *messageToSend = "Uspostavljena konekcija sa serverom..";
+		/////////////////////////////////////////////////////////////////////////////////
+		char *data = (char *)malloc(sizeof(char) * 160);
+		memset(data, 0, 160);
+		data[0] = 160;
 
+		*(char*)((int *)data + 1) = 4;
+		char *ime = "RED1";
+
+		memcpy(data + 8, ime, 4);
+		memcpy(data + 12, messageToSend, 160);
 		
 
 		if (InitializeWindowsSockets() == false)
@@ -254,7 +273,7 @@ int  main(void)
 		// create and initialize address structure
 		sockaddr_in serverAddress;
 		serverAddress.sin_family = AF_INET;
-		serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+		serverAddress.sin_addr.s_addr = inet_addr("192.168.101.110");
 		serverAddress.sin_port = htons(27017);
 		// connect to server specified in serverAddress and socket connectSocket
 		if (connect(connectSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR)
@@ -265,7 +284,7 @@ int  main(void)
 		}
 
 		// Send an prepared message with null terminator included
-		iResult = SEND(&connectSocket, messageToSend);
+		iResult = SEND(&connectSocket, data);
 
 		if (iResult == SOCKET_ERROR)
 		{
@@ -276,6 +295,31 @@ int  main(void)
 		}
 
 		printf("Bytes Sent: %ld\n", iResult);
+		// Buffer used for storing incoming data
+		char recvbuf[DEFAULT_BUFLEN];
+		do
+		{
+			// Receive data until the client shuts down the connection
+			iResult = RECEIVE(&connectSocket, recvbuf);
+			if (iResult > 0)
+			{
+				printf("Message received from client: %s.\n", recvbuf+12);
+				// TODO: Naci gde zatvoriti ovaj accepted socekt
+				serviceSocket = &connectSocket;
+			}
+			else if (iResult == 0)
+			{
+				// connection was closed gracefully
+				printf("Connection with client closed.\n");
+				closesocket(connectSocket);
+			}
+			else
+			{
+				// there was an error during recv
+				printf("recv failed with error: %d\n", WSAGetLastError());
+				closesocket(connectSocket);
+			}
+		} while (iResult > 0);
 
 		// cleanup
 		//closesocket(connectSocket);
@@ -285,15 +329,15 @@ int  main(void)
 	Kreiranje redova( buffera) i niza redova(queuea )
 	*/
 	
-	//Queue queue;
-	//createQueue(&queue);
+	Queue queue;
+	createQueue(&queue);
 	/*
 		Kreiranje niza soketa za komunikaciju sa klijentima. 
 		Inicijalizacija na pocetne vrednosti.
 
 	*/
-	//SocketArray sockets;
-	//createSocketArray(&sockets);
+	SocketArray sockets;
+	createSocketArray(&sockets);
 
 	/*
 		Kreiranje niza svih tredova koji se koriste u programu.
@@ -301,11 +345,11 @@ int  main(void)
 		1: Nit za komunikaciju sa drugim servisom
 		2: Nit koja periodicno proverava da li je neki tread zavrsio sa radom i zatvara handle na njega
 	*/
-	//ThreadArray threadArray;
-	//createThreadArray(&threadArray, &sockets, &queue);
+	ThreadArray threadArray;
+	createThreadArray(&threadArray, &sockets, &queue, serviceSocket);
 
 
-	//Sleep(INFINITE);
+	Sleep(INFINITE);
     return 0;
 }
 
@@ -358,7 +402,7 @@ void createSocketArray(SocketArray *socketArray) {
 	DeleteCriticalSection(&sockets_cs);
 }
 
-void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue *queue) {
+void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue *queue, SOCKET *serviceSocket) {
 	CRITICAL_SECTION thread_cs;
 	InitializeCriticalSection(&thread_cs);
 	initializeThreads(threadArray, DEFAULT_THREADARRLEN, &thread_cs);
@@ -371,7 +415,8 @@ void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue
 	csParams.queue = queue;
 	csParams.socketArray = socketArray;
 	csParams.threadArray = threadArray;
-	threadArray->threads[1] = CreateThread(NULL, 0, &ServerServerThread, &csParams/* IZMENITI */, 0, &serviceID);
+	csParams.serviceSocket = serviceSocket;
+	//threadArray->threads[1] = CreateThread(NULL, 0, &ServerServerThread, &csParams/* IZMENITI */, 0, &serviceID);
 
 	threadArray->threads[0] = CreateThread(NULL, 0, &ClientServerThread, &csParams, 0, &clientID);
 	//WaitForSingleObject(threadArray->threads[0], INFINITE);

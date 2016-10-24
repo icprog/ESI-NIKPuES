@@ -8,6 +8,7 @@ typedef struct csParams {
 	ThreadArray *threadArray;
 	SocketArray *socketArray;
 	Queue *queue;
+	SOCKET *serviceSocket;
 }CSParams;
 
 /*
