@@ -6,6 +6,38 @@
 #define SERVER_PORT "27017"
 #define SERVER_PORT_INT 27017
 
+
+
+int pushInBuffer(char * recvbuf, MySocket * acceptedSocket, Queue * queue, SOCKET * socket) {
+	int nameSize = DataNameSize(recvbuf);
+	char* name = (char *)malloc(sizeof(char)*nameSize + 1);
+	Buffer * buffer;
+	CRITICAL_SECTION cs;
+	InitializeCriticalSection(&cs);
+	parseMessage(name, nameSize, recvbuf, &cs);
+
+
+	/* Ako je u pitanju samo konekcija, ovde zavrsi nit. */
+	char c = getCharacter(recvbuf, &cs);
+	if (c == 'c') {
+		DeleteCriticalSection(&cs);
+		return -1;
+	}
+	// return;
+	DeleteCriticalSection(&cs);
+	//pronadjemo bufer koji nam treba, 
+	// TODO: treba videti sta ako ne pronadje odgovarajuci bafer!
+	buffer = findBuffer(queue, name);
+	if(socket == NULL)
+		acceptedSocket->bufferName = name;
+
+	//free(name); //////////////////////////////////////////FREE
+				//TODO: Gde se free ovo ime??
+	push(buffer, recvbuf); //punimo bafer
+
+	return 0;
+}
+
 DWORD WINAPI PushInService(LPVOID lpParam)
 {
 	PushParams pushParams = *(PushParams*)lpParam;
@@ -27,31 +59,8 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 		if (iResult > 0)
 		{
 			//uzmemo ime iz poruke
-
-			int nameSize = DataNameSize(recvbuf);
-			char* name = (char *)malloc(sizeof(char)*nameSize+1);
-
-			CRITICAL_SECTION cs;
-			InitializeCriticalSection(&cs);
-			parseMessage(name, nameSize, recvbuf, &cs);
+			pushInBuffer(recvbuf, acceptedSocket, pushParams.queue, NULL);
 			
-
-			/* Ako je u pitanju samo konekcija, ovde zavrsi nit. */
-			char c = getCharacter(recvbuf, &cs);
-			if (c == 'c') {
-				DeleteCriticalSection(&cs);
-				return -1;
-			}
-			// return;
-			DeleteCriticalSection(&cs);
-			//pronadjemo bufer koji nam treba, 
-			// TODO: treba videti sta ako ne pronadje odgovarajuci bafer!
-			buffer = findBuffer(pushParams.queue, name);
-			acceptedSocket->bufferName = name;
-
-			free(name); //////////////////////////////////////////FREE
-			//TODO: Gde se free ovo ime??
-			push(buffer, recvbuf); //punimo bafer
 
 		}
 		else if (iResult == 0)
@@ -377,7 +386,7 @@ DWORD WINAPI ClientServerThread(LPVOID lpParam)
 				params.queue = queue;
 				params.socket = &socketArray->sockets[i];
 				// pronadji prvi slobodan tred i kreiraj novi
-				for (int i = 3; i < threadArray->size; i++) {
+				for (int i = 4; i < threadArray->size; i++) {
 					if (threadArray->threads[i] == NULL) {
 						DWORD threadID;
 						threadArray->threads[i] = CreateThread(NULL, 0, &PushInService, &params, 0, &threadID);
@@ -435,6 +444,32 @@ DWORD WINAPI GarbageCollector(LPVOID lpParam)
 		}
 	}
 	Sleep(200);
+	return 0;
+}
+
+
+DWORD WINAPI ReceiveFromService(LPVOID lpParam)
+{
+	PPSParams* ppsParams = (PPSParams*)lpParam;
+	Queue *queue = ppsParams->queue;
+	SocketArray *socketArray = ppsParams->socketArray;
+	int type = ppsParams->type;
+	SOCKET *serviceSocket = ppsParams->serviceSocket;
+	int iResult = 0;
+	while (1) {
+		
+		select(serviceSocket);
+		char recvbuf[DEFAULT_BUFLEN];
+		iResult = receiveServerFromServer(serviceSocket, recvbuf);
+
+		if (iResult == 0) {
+			pushInBuffer(recvbuf, NULL, queue, serviceSocket);
+		}
+	
+	
+	}
+
+
 	return 0;
 }
 

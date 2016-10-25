@@ -62,3 +62,8 @@ DWORD WINAPI PopFromService(LPVOID lpParam);
 */
 DWORD WINAPI GarbageCollector(LPVOID lpParam);
 
+/*
+
+*/
+DWORD WINAPI ReceiveFromService(LPVOID lpParam);
+

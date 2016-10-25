@@ -18,3 +18,5 @@ int sendMessage(SOCKET* socket, char* data);
 int receiveServerAsClient(SOCKET* serviceSocket,SOCKET *acceptedSocket, char* message);
 
 int receiveServerAsServer(SOCKET* serviceSocket, SOCKET *acceptedSocket, char* message);
+
+int receiveServerFromServer(SOCKET *acceptedSocket, char * message);

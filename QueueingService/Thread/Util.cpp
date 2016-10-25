@@ -225,7 +225,36 @@ int receiveServerAsClient(SOCKET* serviceSocket, SOCKET *acceptedSocket, char * 
 
 	return SUCCESS;
 }
+int receiveServerFromServer( SOCKET *acceptedSocket, char * message)
+{
+	int iResult = -1;
 
+
+	// Receive data until the client shuts down the connection
+	iResult = RECEIVE(acceptedSocket, message);
+	printf("%d", iResult);
+	if (iResult > 0)
+	{
+		printf("Message received from server as a server: %s.\n", message + 9);
+		// TODO: Naci gde zatvoriti ovaj accepted socekt
+		iResult = 0;
+	}
+	if (iResult == 0)
+	{
+		//closesocket(*acceptedSocket);
+		return SUCCESS;
+	}
+	else
+	{
+		// there was an error during recv
+		printf("recv failed with error: %d\n", WSAGetLastError());
+		closesocket(*acceptedSocket);
+		return REC_ERR;
+	}
+
+
+	return SUCCESS;
+}
 int receiveServerAsServer(SOCKET* serviceSocket, SOCKET *acceptedSocket, char * message)
 {
 	// Receive data until the client shuts down the connection

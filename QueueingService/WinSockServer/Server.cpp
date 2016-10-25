@@ -123,6 +123,8 @@ int  main(void)
 				ppsParam2.type = 0;
 				threadArray.threads[2] = CreateThread(NULL, 0, &PopFromService, &ppsParam2, 0, &clientID);
 
+				threadArray.threads[3] = CreateThread(NULL, 0, &ReceiveFromService, &ppsParam2, 0, &clientID);
+
 			}
 			// here is where server shutdown loguc could be placed
 
@@ -188,6 +190,8 @@ int  main(void)
 			threadArray.threads[1] = CreateThread(NULL, 0, &PopFromService, &ppsParam, 0, &clientID);
 			ppsParam.type = 0;
 			threadArray.threads[2] = CreateThread(NULL, 0, &PopFromService, &ppsParam, 0, &clientID);
+
+			threadArray.threads[3] = CreateThread(NULL, 0, &ReceiveFromService, &ppsParam, 0, &clientID);
 
 		}
 		//free(message);
