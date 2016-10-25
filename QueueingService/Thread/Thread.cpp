@@ -34,7 +34,6 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 			CRITICAL_SECTION cs;
 			InitializeCriticalSection(&cs);
 			parseMessage(name, nameSize, recvbuf, &cs);
-
 			
 
 			/* Ako je u pitanju samo konekcija, ovde zavrsi nit. */

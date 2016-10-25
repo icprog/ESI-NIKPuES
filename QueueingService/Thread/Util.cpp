@@ -195,13 +195,9 @@ int sendMessage(SOCKET * socket, char * data)
 int receiveServerAsClient(SOCKET* serviceSocket, SOCKET *acceptedSocket, char * message)
 {
 	int iResult = -1;
-<<<<<<< HEAD
 
-=======
-	do
-	{
->>>>>>> a4899daaa88d1886763bc476377f151afa186ed0
-		// Receive data until the client shuts down the connection
+
+// Receive data until the client shuts down the connection
 		iResult = RECEIVE(acceptedSocket, message);
 		printf("%d", iResult);
 		if (iResult > 0)
@@ -243,14 +239,11 @@ int receiveServerAsServer(SOCKET* serviceSocket, SOCKET *acceptedSocket, char * 
 		char *data = (char *)malloc(sizeof(char) * 160);
 		memset(data, 0, 160);
 		createMessage(data, 160, "RED1", 4, "Uspostavljena konekcija sa klijentom...", 's');
-<<<<<<< HEAD
-		sendMessage(acceptedSocket, data);
 
-=======
 		iResult = sendMessage(acceptedSocket, data);
 
 		free(data); ////////////////////////////////////////////FREE
->>>>>>> a4899daaa88d1886763bc476377f151afa186ed0
+
 
 		if (iResult == SOCKET_ERROR)
 		{

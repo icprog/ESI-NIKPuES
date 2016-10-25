@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-﻿  Queue.vcxproj -> C:\Users\RA4-2012\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\Queue.lib
-=======
-﻿  Queue.vcxproj -> C:\Users\ra64-2012\Desktop\25.10\ESI-NIKPuES\QueueingService\Debug\Queue.lib
->>>>>>> a4899daaa88d1886763bc476377f151afa186ed0
+﻿  stdafx.cpp
+c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\queue\stdafx.h(15): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  Queue.cpp
+  Queue.vcxproj -> C:\Users\RA4-2012\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\Queue.lib
