@@ -403,18 +403,20 @@ DWORD WINAPI ReceiveFromService(LPVOID lpParam)
 	int iResult = 0;
 	while (1) {
 		
-		select(serviceSocket);
-		char recvbuf[DEFAULT_BUFLEN];
-		iResult = receiveServerFromServer(serviceSocket, recvbuf);
+		iResult = select(serviceSocket, 0);
+		if (iResult == 1) {
+			char recvbuf[DEFAULT_BUFLEN];
+			iResult = receiveServerFromServer(serviceSocket, recvbuf);
 
-		if (iResult == 0) {
-			pushInBuffer(recvbuf, NULL, queue, serviceSocket);
+			if (iResult == 0) {
+				pushInBuffer(recvbuf, NULL, queue, serviceSocket);
+			}
 		}
 	
-	
+		Sleep(50);
 	}
 
-
+	
 	return 0;
 }
 

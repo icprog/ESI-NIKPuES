@@ -94,7 +94,7 @@ int  main(void)
 		do
 		{
 			iResult = ioctlsocket(acceptedSocket, FIONBIO, &nonBlockingMode);
-			select(&listenSocket);
+			select(&listenSocket, 0);
 			// Wait for clients and accept client connections.
 			// Returning value is acceptedSocket used for further
 			// Client<->Server communication. This version of
@@ -158,9 +158,9 @@ int  main(void)
 		createMessage(message, 160, "RED1", 4, "Uspostavljena konekcija sa serverom...", 's');
 		// create a socket
 
-		iResult = createSocket(&acceptedSocket, "192.168.101.110", 27017);
+		//iResult = createSocket(&acceptedSocket, "192.168.101.110", 27017);
 
-		//iResult = createSocket(&acceptedSocket, "192.168.101.109", 27017);
+		iResult = createSocket(&acceptedSocket, "192.168.101.109", 27017);
 
 		if (iResult != 0) {
 			WSACleanup();
@@ -174,7 +174,7 @@ int  main(void)
 			return 1;
 		}
 
-		free(message); ///////////////////////////////////////////////// FREE
+		//free(message); ///////////////////////////////////////////////// FREE
 
 		iResult = receiveServerAsClient(&serviceSocket, &acceptedSocket, recvbuf);
 		if (iResult == 0) {
@@ -183,7 +183,7 @@ int  main(void)
 
 			PPSParams ppsParam;
 			ppsParam.queue = &queue;
-			ppsParam.serviceSocket = &serviceSocket;
+			ppsParam.serviceSocket = &acceptedSocket;
 			ppsParam.socketArray = &sockets;
 			ppsParam.type = 1;
 

@@ -5,7 +5,7 @@ enum codes { SUCCESS = 0, SOCK_ERR = -1, SLEEP = -2, CONN_ERR = -3, SEND_ERR = -
 
 int listenSocketFunc(SOCKET* listenSocket, char* port);
 
-int select(SOCKET* socket);
+int select(SOCKET* socket, int type);
 
 int accept(SOCKET* acceptedSocket, SOCKET* listenSocket);
 

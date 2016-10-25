@@ -74,7 +74,7 @@ int listenSocketFunc(SOCKET * listenSocket, char * port)
 	return iResult;
 }
 
-int select(SOCKET * socket)
+int select(SOCKET * socket, int type)
 {
 	FD_SET set;
 	timeval timeVal;
@@ -90,8 +90,13 @@ int select(SOCKET * socket)
 		// instantaneously
 		timeVal.tv_sec = 0;
 		timeVal.tv_usec = 0;
-		iResult = select(0 /* ignored */, &set, NULL, NULL, &timeVal);
-
+		if (type == 0)  //receive
+		{
+			iResult = select(0 /* ignored */, &set, NULL, NULL, &timeVal);
+		}
+		else {
+			iResult = select(0 /* ignored */, NULL, &set, NULL, &timeVal);
+		}
 		// lets check if there was an error during select
 		if (iResult == SOCKET_ERROR)
 		{
