@@ -141,7 +141,7 @@ void createMessage(char * data, int length, char * name, int nameLength, char * 
 	*((char*)((int *)data + 2) + 1) = c;
 
 	memcpy(data + 10, name, nameLength);
-	memcpy(data + 10 + nameLength, message, length);
+	memcpy(data + 10 + nameLength, message, length-10-nameLength);
 
 
 }

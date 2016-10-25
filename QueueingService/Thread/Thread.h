@@ -29,6 +29,7 @@ typedef struct ssParams {
 Struktura za parametre PushInService
 */
 typedef struct pushParams {
+	SocketArray *socketArray;
 	MySocket *socket;
 	Queue *queue;
 	CRITICAL_SECTION *cs;

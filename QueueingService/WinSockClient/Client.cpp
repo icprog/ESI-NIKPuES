@@ -100,7 +100,7 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 	closesocket(connectSocket);
 	WSACleanup();
 
-	free(data);   ////////////////////////////////////////////////// FREE
+	//free(data);   ////////////////////////////////////////////////// FREE
 
 	return 0;
 }
@@ -110,9 +110,10 @@ int __cdecl main(int argc, char **argv)
 	HANDLE sendThread[2];
 	DWORD sendThreadID;
 	int type = 0;
-	sendThread[0] = CreateThread(0, 0, &sendThreadFunc, &type, 0, &sendThreadID);
-	int type = 1;
-	sendThread[1] = CreateThread(0, 0, &sendThreadFunc, 0, 0, &sendThreadID);
+	//sendThread[0] = CreateThread(0, 0, &sendThreadFunc, &type, 0, &sendThreadID);
+	type = 1;
+	sendThread[1] = CreateThread(0, 0, &sendThreadFunc, &type, 0, &sendThreadID);
+	WaitForSingleObject(sendThread[1], INFINITE);
 	/*
 	// socket used to communicate with server
 	for (int i = 0; i < 1; i++) {

@@ -167,7 +167,7 @@ int RECEIVE(SOCKET* socket, char* buffer) {
 	}
 	len = *(int*)duzina;
 
-	free(duzina); ///////////////////////////////////////////////// FREE
+	//free(duzina); ///////////////////////////////////////////////// FREE
 
 	i = 4;
 	*(int*)buffer = len;

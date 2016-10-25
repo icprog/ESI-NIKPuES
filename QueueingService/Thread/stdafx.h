@@ -11,6 +11,8 @@
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
+#define _CRT_SECURE_NO_WARNINGS
+
 
 // TODO: reference additional headers your program requires here
 #include "../Buffer/Buffer.h";

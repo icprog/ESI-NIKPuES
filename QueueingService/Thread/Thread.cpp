@@ -8,7 +8,7 @@
 
 
 
-int pushInBuffer(char * recvbuf, MySocket * acceptedSocket, Queue * queue, SOCKET * socket) {
+int pushInBuffer(char * recvbuf, MySocket * acceptedSocket, Queue * queue, SOCKET * socket, SocketArray *socketArray) {
 	int nameSize = DataNameSize(recvbuf);
 	char* name = (char *)malloc(sizeof(char)*nameSize + 1);
 	Buffer * buffer;
@@ -21,13 +21,17 @@ int pushInBuffer(char * recvbuf, MySocket * acceptedSocket, Queue * queue, SOCKE
 	char c = getCharacter(recvbuf, &cs);
 	if (c == 'c') {
 		DeleteCriticalSection(&cs);
+		acceptedSocket->bufferName = name;
 		return -1;
 	}
 	// return;
 	DeleteCriticalSection(&cs);
 	//pronadjemo bufer koji nam treba, 
 	// TODO: treba videti sta ako ne pronadje odgovarajuci bafer!
-	buffer = findBuffer(queue, name);
+	if(socket != NULL)
+		buffer = findBuffer(queue, strcat(name,"1"));
+	else
+		buffer = findBuffer(queue, name);
 	if(socket == NULL)
 		acceptedSocket->bufferName = name;
 
@@ -42,6 +46,7 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 {
 	PushParams pushParams = *(PushParams*)lpParam;
 	MySocket *acceptedSocket = pushParams.socket;
+	SocketArray *socketArray = pushParams.socketArray;
 	int initializator = pushParams.initializator;
 	int iResult = 0;
 
@@ -58,8 +63,13 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 		if (iResult > 0)
 		{
 			//uzmemo ime iz poruke
-			pushInBuffer(recvbuf, acceptedSocket, pushParams.queue, NULL);
-			
+			iResult = pushInBuffer(recvbuf, acceptedSocket, pushParams.queue, NULL, socketArray);
+			if (iResult == -1) {
+
+				return 0;
+
+
+			}
 
 		}
 		else if (iResult == 0)
@@ -153,7 +163,7 @@ DWORD WINAPI PopFromService(LPVOID lpParam)
 					if (iResult != 0) {
 						break;  //////// STA OVDE ?????
 					}
-					free(recvbuf);
+					//free(recvbuf);
 				}
 			}
 		}
@@ -161,15 +171,19 @@ DWORD WINAPI PopFromService(LPVOID lpParam)
 			for (int i = 1; i < queue->size; i+=2) {
 				if (queue->buffer[i].count > 0) {
 					for (int j = 0; j < socketArray->size; j++) {
-						if (socketArray->sockets[i].bufferName != NULL && socketArray->sockets[i].socket != INVALID_SOCKET) {
-							if (strcmp(socketArray->sockets[i].bufferName, queue->buffer[i].name) == 0) {
+						if (socketArray->sockets[j].bufferName != NULL && socketArray->sockets[j].socket != INVALID_SOCKET) {
+							if (strcmp(socketArray->sockets[j].bufferName, queue->buffer[i].name) == 0) {
 								char *recvbuf = (char *)malloc(sizeof(char) * queue->buffer[i].size);
 								memset(recvbuf, 0, queue->buffer[i].size);
-								int iResult = sendOnSocket(&queue->buffer[i], NULL, recvbuf, &socketArray->sockets[i]);
+								int iResult = sendOnSocket(&queue->buffer[i], NULL, recvbuf, &socketArray->sockets[j]);
+								
 								if (iResult != 0) {
+									closesocket(socketArray->sockets[j].socket);
+									socketArray->sockets[j].socket = INVALID_SOCKET;
+									socketArray->sockets[j].bufferName = NULL;
 									break;  //////// STA OVDE ?????
 								}
-								free(recvbuf);
+								//free(recvbuf);
 							}
 						}
 					}
@@ -330,6 +344,7 @@ DWORD WINAPI ClientServerThread(LPVOID lpParam)
 				PushParams params;
 				params.queue = queue;
 				params.socket = &socketArray->sockets[i];
+				params.socketArray = socketArray;
 				// pronadji prvi slobodan tred i kreiraj novi
 				for (int i = 4; i < threadArray->size; i++) {
 					if (threadArray->threads[i] == NULL) {
@@ -409,7 +424,7 @@ DWORD WINAPI ReceiveFromService(LPVOID lpParam)
 			iResult = receiveServerFromServer(serviceSocket, recvbuf);
 
 			if (iResult == 0) {
-				pushInBuffer(recvbuf, NULL, queue, serviceSocket);
+				pushInBuffer(recvbuf, NULL, queue, serviceSocket, socketArray);
 			}
 		}
 	

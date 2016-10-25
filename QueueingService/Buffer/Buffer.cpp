@@ -23,7 +23,7 @@ char getCharacter(char * data, CRITICAL_SECTION *cs)
 {
 	EnterCriticalSection(cs);
 	char c;
-	c = *data;
+	c = *(data+9);
 	LeaveCriticalSection(cs);
 	return c;
 
@@ -34,8 +34,8 @@ void parseMessage(char * name, int nameSize, char * data, CRITICAL_SECTION *cs)
 {
 	EnterCriticalSection(cs);
 	
-	memset(name, 0, nameSize + 1);
-	memcpy(name, data + 8, nameSize); //kopiraj kraj starog bufera u novi 
+	memset(name, 0, nameSize);
+	memcpy(name, data + 10, nameSize); //kopiraj kraj starog bufera u novi 
 	LeaveCriticalSection(cs);
 	//return name;
 	
