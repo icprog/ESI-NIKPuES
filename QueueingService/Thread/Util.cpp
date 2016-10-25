@@ -134,14 +134,14 @@ void createMessage(char * data, int length, char * name, int nameLength, char * 
 {
 
 
-	data[0] = length;
+	*(int *)data = length;
 
-	*(char*)((int *)data + 1) = nameLength;
+	*((int *)data + 1) = nameLength;
 	//*(data + 8) = c;
-	*((char*)((int *)data + 1) + 1) = c;
+	*((char*)((int *)data + 2) + 1) = c;
 
-	memcpy(data + 9, name, nameLength);
-	memcpy(data + 9 + nameLength, message, length);
+	memcpy(data + 10, name, nameLength);
+	memcpy(data + 10 + nameLength, message, length);
 
 
 }

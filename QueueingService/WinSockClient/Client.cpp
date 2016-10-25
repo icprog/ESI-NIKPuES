@@ -8,6 +8,7 @@
 #include <conio.h>
 
 #include "../SocketNB/socketNB.h"
+#include "../Thread/Util.h";
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT 27016
 
@@ -23,7 +24,7 @@ typedef struct sendThreadParam {
 DWORD WINAPI sendThreadFunc(LPVOID param) {
 	printf("\n Usao sam u thread za obradu!\n");
 	int iResult = 0;
-
+	int type = *(int *)param;
 
 	SOCKET connectSocket = INVALID_SOCKET;
 	// variable used to store function return value
@@ -32,16 +33,12 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 	/////////////////////////////////////////////////////////////////////////////////
 	char *data = (char *)malloc(sizeof(char) * 26 + 1);
 	memset(data, 0, 26);
-	data[0] = 26;
+	createMessage(data, 26, "RED1", 5, "Saljem na red1", 's');
 
-	*(char*)((int *)data + 1) = 4;
 
-	char *ime = "RED1";
-	char *message = "ovo je poruka";
-
-	memcpy(data + 8, ime, 4);
-	memcpy(data + 12, message, 14);
-
+	char *data1 = (char *)malloc(sizeof(char) * 26 + 1);
+	memset(data1, 0, 26);
+	createMessage(data1, 26, "RED11", 5, "Hocu sve sa reda1", 'c');
 
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -83,8 +80,11 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 	unsigned long int nonBlockingMode = 1;
 	iResult = ioctlsocket(connectSocket, FIONBIO, &nonBlockingMode);
 
+	if(type == 0)
 	// Send an prepared message with null terminator included
-	iResult = SEND(&connectSocket, data);
+		iResult = SEND(&connectSocket, data);
+	else
+		iResult = SEND(&connectSocket, data1);
 
 	if (iResult == SOCKET_ERROR)
 	{
@@ -107,9 +107,13 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 
 int __cdecl main(int argc, char **argv)
 {
-	HANDLE sendThread[1];
+	HANDLE sendThread[2];
 	DWORD sendThreadID;
-
+	int type = 0;
+	sendThread[0] = CreateThread(0, 0, &sendThreadFunc, &type, 0, &sendThreadID);
+	int type = 1;
+	sendThread[1] = CreateThread(0, 0, &sendThreadFunc, 0, 0, &sendThreadID);
+	/*
 	// socket used to communicate with server
 	for (int i = 0; i < 1; i++) {
 		printf("\n Okidam nit za obradu: %d\n", i);
@@ -120,7 +124,8 @@ int __cdecl main(int argc, char **argv)
 		WaitForSingleObject(sendThread[i], INFINITE);
 		CloseHandle(sendThread[i]);;
 	}
-
+	*/
+	Sleep(1000);
 
 	return 0;
 }

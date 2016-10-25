@@ -84,6 +84,9 @@
     <ProjectReference Include="..\SocketNB\SocketNB.vcxproj">
       <Project>{6ff32f14-39c8-4dce-8fa3-714424a4c04b}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Thread\Thread.vcxproj">
+      <Project>{c5f876b5-251e-4e73-8cf6-5ec49107479c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
