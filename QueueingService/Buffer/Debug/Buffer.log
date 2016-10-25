@@ -1,5 +1,0 @@
-﻿  stdafx.cpp
-  Buffer.cpp
-c:\users\ra64-2012\desktop\25.10\4\esi-nikpues\queueingservice\buffer\buffer.cpp(1): warning C4627: '#include "Buffer.h"': skipped when looking for precompiled header use
-  c:\users\ra64-2012\desktop\25.10\4\esi-nikpues\queueingservice\buffer\buffer.cpp(1): note: Add directive to 'stdafx.h' or rebuild precompiled header
-  Buffer.vcxproj -> C:\Users\ra64-2012\Desktop\25.10\4\ESI-NIKPuES\QueueingService\Debug\Buffer.lib

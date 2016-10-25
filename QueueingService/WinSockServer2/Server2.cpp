@@ -10,7 +10,7 @@
 #include "../Thread/Util.h";
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27017"
+#define DEFAULT_PORT "27018"
 #define DEFAULT_SOCARRLEN 10
 #define DEFAULT_THREADARRLEN 10
 #define INITIAL_QUEUE_SIZE 10
@@ -161,7 +161,7 @@ int  main(void)
 		//iResult = createSocket(&acceptedSocket, "192.168.101.110", 27017);
 
 		//iResult = createSocket(&acceptedSocket, "192.168.101.109", 27017);
-		iResult = createSocket(&acceptedSocket, "127.0.0.1", 27018);
+		iResult = createSocket(&acceptedSocket, "127.0.0.1", 27017);
 		if (iResult != 0) {
 			WSACleanup();
 			return 1;

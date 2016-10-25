@@ -31,6 +31,14 @@
 # Debug files
 *.dSYM/
 *.su
-
+*/Debug/*
+*/Debug
+/Debug
+Debug
+*/*/Debug
+*/*/Debug/*
+/ipch
+ipch
+*/ipch
 #VS 
 

@@ -1,4 +1,0 @@
-﻿  stdafx.cpp
-c:\users\ra64-2012\desktop\25.10\4\esi-nikpues\queueingservice\socketarray\stdafx.h(15): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  SocketArray.cpp
-  SocketArray.vcxproj -> C:\Users\ra64-2012\Desktop\25.10\4\ESI-NIKPuES\QueueingService\Debug\SocketArray.lib

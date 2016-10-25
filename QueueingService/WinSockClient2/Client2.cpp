@@ -95,32 +95,12 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 	}
 
 	printf("Bytes Sent: %ld\n", iResult);
+
 	select(&connectSocket, 0);
-	char recvbuf[512];
-	iResult = RECEIVE(&connectSocket, recvbuf);
-	printf("%d", iResult);
-	if (iResult > 0)
-	{
-		printf("Message received from server as a server: %s.\n", recvbuf + 9);
-		// TODO: Naci gde zatvoriti ovaj accepted socekt
-		iResult = 0;
-	}
-	if (iResult == 0)
-	{
-		// connection was closed gracefully
-		printf("Connection with server established.\n");
-		closesocket(connectSocket);
-		WSACleanup();
-		return 0;
-	}
-	else
-	{
-		// there was an error during recv
-		printf("recv failed with error: %d\n", WSAGetLastError());
-		closesocket(connectSocket);
-		WSACleanup();
-		return 1;
-	}
+	
+
+
+
 	// cleanup
 	closesocket(connectSocket);
 	WSACleanup();
@@ -135,10 +115,10 @@ int __cdecl main(int argc, char **argv)
 	HANDLE sendThread[2];
 	DWORD sendThreadID;
 	int type = 0;
-	//sendThread[0] = CreateThread(0, 0, &sendThreadFunc, &type, 0, &sendThreadID);
-	type = 1;
-	sendThread[1] = CreateThread(0, 0, &sendThreadFunc, &type, 0, &sendThreadID);
-	WaitForSingleObject(sendThread[1], INFINITE);
+	sendThread[0] = CreateThread(0, 0, &sendThreadFunc, &type, 0, &sendThreadID);
+	//type = 1;
+	//sendThread[1] = CreateThread(0, 0, &sendThreadFunc, &type, 0, &sendThreadID);
+	WaitForSingleObject(sendThread[0], INFINITE);
 	/*
 	// socket used to communicate with server
 	for (int i = 0; i < 1; i++) {

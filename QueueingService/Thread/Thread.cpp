@@ -30,11 +30,10 @@ int pushInBuffer(char * recvbuf, MySocket * acceptedSocket, Queue * queue, SOCKE
 	// TODO: treba videti sta ako ne pronadje odgovarajuci bafer!
 	if(socket != NULL)
 		buffer = findBuffer(queue, strcat(name,"1"));
-	else
+	else{
 		buffer = findBuffer(queue, name);
-	if(socket == NULL)
 		acceptedSocket->bufferName = name;
-
+	}
 	//free(name); //////////////////////////////////////////FREE
 				//TODO: Gde se free ovo ime??
 	push(buffer, recvbuf); //punimo bafer
