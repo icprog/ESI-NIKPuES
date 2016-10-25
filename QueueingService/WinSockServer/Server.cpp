@@ -10,7 +10,7 @@
 #include "../Thread/Util.h";
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27017"
+#define DEFAULT_PORT "27018"
 #define DEFAULT_SOCARRLEN 10
 #define DEFAULT_THREADARRLEN 10
 #define INITIAL_QUEUE_SIZE 10
@@ -132,6 +132,8 @@ int  main(void)
 
 
 		char *message;
+		message = (char *)malloc(sizeof(char) * 160);
+		memset(message, 0, 160);
 		createMessage(message, 160, "RED1", 4, "Uspostavljena konekcija sa serverom...", 's');
 		// create a socket
 
@@ -151,7 +153,7 @@ int  main(void)
 
 		receiveServerAsClient(&serviceSocket, &acceptedSocket, recvbuf);
 
-		free(message);
+		//free(message);
 		// cleanup
 		//closesocket(connectSocket);
 		//WSACleanup();

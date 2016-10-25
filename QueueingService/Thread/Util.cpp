@@ -128,15 +128,14 @@ int accept(SOCKET * acceptedSocket, SOCKET* listenSocket)
 void createMessage(char * data, int length, char * name, int nameLength, char * message, char c)
 {
 
-	data = (char *)malloc(sizeof(char) * length);
-	memset(data, 0, length);
+
 	data[0] = length;
 
 	*(char*)((int *)data + 1) = nameLength;
 	*(data + 8) = c;
 
 	memcpy(data + 9, name, nameLength);
-	memcpy(data + nameLength, message, 14);
+	memcpy(data + nameLength, message, length);
 
 
 }
@@ -237,13 +236,7 @@ int receiveServerAsServer(SOCKET* serviceSocket, SOCKET *acceptedSocket, char * 
 		char *messageToSend = " Uspostavljena konekcija sa klijentom...";
 		char *data = (char *)malloc(sizeof(char) * 160);
 		memset(data, 0, 160);
-		data[0] = 160;
-
-		*(char*)((int *)data + 1) = 4;
-		char *ime = "RED1";
-
-		memcpy(data + 8, ime, 4);
-		memcpy(data + 12, messageToSend, 160);
+		createMessage(message, 160, "RED1", 4, "Uspostavljena konekcija sa klijentom...", 's');
 		iResult = SEND(acceptedSocket, data);
 
 		if (iResult == SOCKET_ERROR)

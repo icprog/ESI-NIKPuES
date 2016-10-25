@@ -20,6 +20,5 @@ c:\users\mihailo\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.c
 c:\users\mihailo\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.cpp(66): warning C4101: 'serviceID': unreferenced local variable
 c:\users\mihailo\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.cpp(66): warning C4101: 'clientID': unreferenced local variable
 c:\users\mihailo\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.cpp(66): warning C4101: 'gcID': unreferenced local variable
-c:\users\mihailo\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.cpp(135): warning C4700: uninitialized local variable 'message' used
-  WinSockServer.vcxproj -> C:\Users\mihailo\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\Server.exe
-  WinSockServer.vcxproj -> C:\Users\mihailo\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\Server.pdb (Full PDB)
+  WinSockServer.vcxproj -> C:\Users\mihailo\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\Server1.exe
+  WinSockServer.vcxproj -> C:\Users\mihailo\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\Server1.pdb (Full PDB)
