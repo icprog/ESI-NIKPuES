@@ -4,7 +4,7 @@
 void expandQueue(Queue * queue)
 {
 	Buffer *newArray;
-	newArray = (Buffer *)malloc(sizeof(Buffer) * queue->size * 2);
+	newArray = (Buffer *)malloc(sizeof(Buffer) * queue->size * 2 + 1);
 	queue->size *= 2;
 	memcpy(newArray, queue->buffer, queue->size);
 	free(queue->buffer);
@@ -69,7 +69,7 @@ void initializeQueue(Queue * queue, int size, CRITICAL_SECTION *cs)
 	EnterCriticalSection(cs);
 	queue->count = 0;
 	queue->size = size;
-	queue->buffer = (Buffer *)malloc(sizeof(Buffer) * size);
+	queue->buffer = (Buffer *)malloc(sizeof(Buffer) * size + 1);
 	for (int i = 0; i < size; i++) {
 		queue->buffer[i].name = NULL;
 	}

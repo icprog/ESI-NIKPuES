@@ -1,4 +1,2 @@
-﻿  stdafx.cpp
-c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\threadarray\stdafx.h(16): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  ThreadArray.cpp
+﻿  ThreadArray.cpp
   ThreadArray.vcxproj -> C:\Users\RA4-2012\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\ThreadArray.lib

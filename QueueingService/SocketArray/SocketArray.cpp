@@ -4,7 +4,7 @@
 void expandSockets(SocketArray * socketArray)
 {
 	MySocket *newArray;
-	newArray = (MySocket *)malloc(sizeof(MySocket) * socketArray->size * 2);
+	newArray = (MySocket *)malloc(sizeof(MySocket) * socketArray->size * 2 + 1);
 	socketArray->size *= 2;
 	memcpy(newArray, socketArray->sockets, socketArray->size);
 	free(socketArray->sockets);
@@ -73,7 +73,7 @@ void initializeSockets(SocketArray * socketArray, int size, CRITICAL_SECTION *cs
 	EnterCriticalSection(cs);
 	socketArray->count = 0;
 	socketArray->size = size;
-	socketArray->sockets = (MySocket *)malloc(sizeof(MySocket) * size);
+	socketArray->sockets = (MySocket *)malloc(sizeof(MySocket) * size +1);
 	for (int i = 0; i < size; i++) {
 		socketArray->sockets[i].bufferName = NULL;
 		socketArray->sockets[i].socket = INVALID_SOCKET;

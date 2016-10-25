@@ -111,13 +111,17 @@ int  main(void)
 
 				PPSParams ppsParam;
 				ppsParam.queue = &queue;
-				ppsParam.serviceSocket = &serviceSocket;
+				ppsParam.serviceSocket = &acceptedSocket;
 				ppsParam.socketArray = &sockets;
 				ppsParam.type = 1;
 
 				threadArray.threads[1] = CreateThread(NULL, 0, &PopFromService, &ppsParam, 0, &clientID);
-				ppsParam.type = 0;
-				threadArray.threads[2] = CreateThread(NULL, 0, &PopFromService, &ppsParam, 0, &clientID);
+				PPSParams ppsParam2;
+				ppsParam2.queue = &queue;
+				ppsParam2.serviceSocket = &acceptedSocket;
+				ppsParam2.socketArray = &sockets;
+				ppsParam2.type = 0;
+				threadArray.threads[2] = CreateThread(NULL, 0, &PopFromService, &ppsParam2, 0, &clientID);
 
 			}
 			// here is where server shutdown loguc could be placed
@@ -147,14 +151,14 @@ int  main(void)
 
 
 		char *message;
-		message = (char *)malloc(sizeof(char) * 160);
+		message = (char *)malloc(sizeof(char) * 160 +1);
 		memset(message, 0, 160);
 		createMessage(message, 160, "RED1", 4, "Uspostavljena konekcija sa serverom...", 's');
 		// create a socket
 
-		//iResult = createSocket(&acceptedSocket, "192.168.101.110", 27017);
+		iResult = createSocket(&acceptedSocket, "192.168.101.110", 27017);
 
-		iResult = createSocket(&acceptedSocket, "192.168.101.109", 27017);
+		//iResult = createSocket(&acceptedSocket, "192.168.101.109", 27017);
 
 		if (iResult != 0) {
 			WSACleanup();
@@ -224,7 +228,7 @@ void createQueue(Queue *queue) {
 	createBuffer(&red3, imered3, DEFAULT_BUFLEN, &cs[4]);
 	createBuffer(&red31, imered31, DEFAULT_BUFLEN, &cs[5]);
 
-	Buffer *bufferArray = (Buffer *)malloc(sizeof(Buffer)*INITIAL_QUEUE_SIZE);
+	Buffer *bufferArray = (Buffer *)malloc(sizeof(Buffer)*INITIAL_QUEUE_SIZE + 1);
 	bufferArray[0] = red1;
 	bufferArray[1] = red11;
 	bufferArray[2] = red2;

@@ -236,13 +236,13 @@ int receiveServerAsServer(SOCKET* serviceSocket, SOCKET *acceptedSocket, char * 
 
 		// Send an prepared message with null terminator included
 		char *messageToSend = " Uspostavljena konekcija sa klijentom...";
-		char *data = (char *)malloc(sizeof(char) * 160);
+		char *data = (char *)malloc(sizeof(char) * 160 +1);
 		memset(data, 0, 160);
 		createMessage(data, 160, "RED1", 4, "Uspostavljena konekcija sa klijentom...", 's');
 
 		iResult = sendMessage(acceptedSocket, data);
 
-		free(data); ////////////////////////////////////////////FREE
+		//free(data); ////////////////////////////////////////////FREE
 
 
 		if (iResult == SOCKET_ERROR)

@@ -29,7 +29,7 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 			//uzmemo ime iz poruke
 
 			int nameSize = DataNameSize(recvbuf);
-			char* name = (char *)malloc(sizeof(char)*nameSize);
+			char* name = (char *)malloc(sizeof(char)*nameSize+1);
 
 			CRITICAL_SECTION cs;
 			InitializeCriticalSection(&cs);
@@ -167,7 +167,7 @@ int sendOnSocket(Buffer *buffer, SOCKET *socket, char *data, MySocket *mySocket)
 			//WSACleanup();
 			return 1;
 		}
-		printf("Bytes Sent: %ld\n", iResult);
+		//printf("Bytes Sent: %ld\n", iResult);
 	}
 
 
@@ -193,7 +193,7 @@ DWORD WINAPI PopFromService(LPVOID lpParam)
 		if (type == 1) {
 			for (int i = 0; i < queue->size; i += 2) {
 				if (queue->buffer[i].count > 0) {
-					char *recvbuf = (char *)malloc(sizeof(char) * queue->buffer[i].size);
+					char *recvbuf = (char *)malloc(sizeof(char) * queue->buffer[i].size+1);
 					memset(recvbuf, 0, queue->buffer[i].size);
 					int iResult = sendOnSocket(&queue->buffer[i], serviceSocket, recvbuf, NULL);
 					if (iResult != 0) {

@@ -147,7 +147,7 @@ int RECEIVE(SOCKET* socket, char* buffer) {
 	int i = 0;
 	int len;
 	int iResult = 0;
-	char *duzina = (char *)malloc(sizeof(char) * 4);
+	char *duzina = (char *)malloc(sizeof(char) * 4 + 1);
 	memset(duzina, 0, 4);
 	while (i < 4) {
 		do {

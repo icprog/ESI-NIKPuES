@@ -30,7 +30,7 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 	// message to send
 	char *messageToSend = "this is a test";
 	/////////////////////////////////////////////////////////////////////////////////
-	char *data = (char *)malloc(sizeof(char) * 26);
+	char *data = (char *)malloc(sizeof(char) * 26 + 1);
 	memset(data, 0, 26);
 	data[0] = 26;
 

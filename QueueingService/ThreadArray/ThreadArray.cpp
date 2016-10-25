@@ -5,7 +5,7 @@
 void expandThreads(ThreadArray * threadArray)
 {
 	HANDLE *newArray;
-	newArray = (HANDLE *)malloc(sizeof(HANDLE) * threadArray->size * 2);
+	newArray = (HANDLE *)malloc(sizeof(HANDLE) * threadArray->size * 2 + 1);
 	threadArray->size *= 2;
 	memcpy(newArray, threadArray->threads, threadArray->size);
 	free(threadArray->threads);
@@ -71,7 +71,7 @@ void initializeThreads(ThreadArray * threadArray, int size, CRITICAL_SECTION *cs
 	EnterCriticalSection(cs);
 	threadArray->count = 0;
 	threadArray->size = size;
-	threadArray->threads = (HANDLE *)malloc(sizeof(HANDLE) * size);
+	threadArray->threads = (HANDLE *)malloc(sizeof(HANDLE) * size + 1);
 	//memset(threadArray->threads, NULL, size);
 
 	for (int i = 0; i < threadArray->size; i++) {

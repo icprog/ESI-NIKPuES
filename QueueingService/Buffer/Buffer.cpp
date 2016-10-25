@@ -81,7 +81,7 @@ void expand(Buffer * buffer)
 	int newSize;
 
 	newSize = buffer->size * 2;
-	newData = (char *)malloc(sizeof(char)*newSize);
+	newData = (char *)malloc(sizeof(char)*newSize + 1);
 	memset(newData, 0, newSize);
 	if (buffer->pushIdx < buffer->popIdx) { // ako je push manji od pop indeksa, onda je data iz dva dela pa radimo 2 mem kopija
 		int rest = buffer->size - buffer->popIdx;
@@ -120,7 +120,7 @@ void shrink(Buffer * buffer)
 			newSize = buffer->size / 2 + 2;
 
 		// malloc new array
-		newData = (char *)malloc(sizeof(char) * newSize);      // allocate 50 ints
+		newData = (char *)malloc(sizeof(char) * newSize+1);      // allocate 50 ints
 		memset(newData, 0, newSize);
 
 		if (buffer->pushIdx < buffer->popIdx) {
