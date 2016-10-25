@@ -35,6 +35,7 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 	data[0] = 26;
 
 	*(char*)((int *)data + 1) = 4;
+
 	char *ime = "RED1";
 	char *message = "ovo je poruka";
 
