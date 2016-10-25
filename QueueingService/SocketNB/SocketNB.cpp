@@ -11,7 +11,7 @@ int bufferLength(char* buffer) {
 }
 
 int sendNB(SOCKET* socket, char* buffer, int bufferLength) {
-	int iResult, i = 0;
+	int iResult = 0, i = 0;
 	int sockAddrLen = sizeof(struct sockaddr);
 	FD_SET set;
 	timeval timeVal;
@@ -61,7 +61,7 @@ int SEND(SOCKET* socket, char* buffer) {
 
 	int i = 0;
 	int len = bufferLength(buffer);
-	int iResult;
+	int iResult = 0;
 	while (i < len) {
 		do {
 			iResult = sendNB(socket, buffer, len - i);
@@ -81,7 +81,7 @@ int SEND(SOCKET* socket, char* buffer) {
 }
 
 int receiveNB(SOCKET* socket, char* buffer, int bufferLength, int continueFrom) {
-	int iResult, i = 0;
+	int iResult = 0, i = 0;
 	int sockAddrLen = sizeof(struct sockaddr);
 	FD_SET set;
 	timeval timeVal;
@@ -146,7 +146,7 @@ int RECEIVE(SOCKET* socket, char* buffer) {
 
 	int i = 0;
 	int len;
-	int iResult;
+	int iResult = 0;
 	char *duzina = (char *)malloc(sizeof(char) * 4);
 	memset(duzina, 0, 4);
 	while (i < 4) {
@@ -166,6 +166,9 @@ int RECEIVE(SOCKET* socket, char* buffer) {
 		i += iResult;
 	}
 	len = *(int*)duzina;
+
+	free(duzina); ///////////////////////////////////////////////// FREE
+
 	i = 4;
 	*(int*)buffer = len;
 	iResult = 0;

@@ -173,7 +173,7 @@ int createSocket(SOCKET * ssocket, char * ip, int port)
 
 int sendMessage(SOCKET * socket, char * data)
 {
-	int iResult;
+	int iResult = -1;
 	// Send an prepared message with null terminator included
 
 	printf("\nSENDING MESSAGE: %s", data + 9);
@@ -194,7 +194,7 @@ int sendMessage(SOCKET * socket, char * data)
 
 int receiveServerAsClient(SOCKET* serviceSocket, SOCKET *acceptedSocket, char * message)
 {
-	int iResult;
+	int iResult = -1;
 	do
 	{
 		// Receive data until the client shuts down the connection
@@ -230,14 +230,16 @@ int receiveServerAsServer(SOCKET* serviceSocket, SOCKET *acceptedSocket, char * 
 	int iResult = RECEIVE(acceptedSocket, message);
 	if (iResult > 0)
 	{
-		printf("Message received from another server: %s.\n", message + 9);
+		printf("Message received from another server: %s.\n", message +9 );
 
 		// Send an prepared message with null terminator included
 		char *messageToSend = " Uspostavljena konekcija sa klijentom...";
 		char *data = (char *)malloc(sizeof(char) * 160);
 		memset(data, 0, 160);
-		createMessage(message, 160, "RED1", 4, "Uspostavljena konekcija sa klijentom...", 's');
-		iResult = SEND(acceptedSocket, data);
+		createMessage(data, 160, "RED1", 4, "Uspostavljena konekcija sa klijentom...", 's');
+		iResult = sendMessage(acceptedSocket, data);
+
+		free(data); ////////////////////////////////////////////FREE
 
 		if (iResult == SOCKET_ERROR)
 		{

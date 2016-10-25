@@ -18,5 +18,5 @@ void shrink(Buffer *buffer);							  // shrink the buffer size when it's fulness
 void createBuffer(Buffer *buffer, char *name, int bufferLength, CRITICAL_SECTION *cs);		  // create buffer
 void destroyBuffer(Buffer *buffer);
 int DataNameSize(char * data);
-char* parseMessage(char *data, CRITICAL_SECTION *cs);						  //parse Mesage, get buffer name
+void parseMessage(char * name, int nameSize, char *data, CRITICAL_SECTION *cs);						  //parse Mesage, get buffer name
 char getCharacter(char * data, CRITICAL_SECTION *cs);

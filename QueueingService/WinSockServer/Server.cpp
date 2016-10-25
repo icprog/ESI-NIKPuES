@@ -10,7 +10,7 @@
 #include "../Thread/Util.h";
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27018"
+#define DEFAULT_PORT "27017"
 #define DEFAULT_SOCARRLEN 10
 #define DEFAULT_THREADARRLEN 10
 #define INITIAL_QUEUE_SIZE 10
@@ -103,8 +103,10 @@ int  main(void)
 				// Ako je ovde greska, kraj rada
 				return 1;
 			}
-			receiveServerAsServer(&serviceSocket, &acceptedSocket, recvbuf);
-
+			iResult = receiveServerAsServer(&serviceSocket, &acceptedSocket, recvbuf);
+			if (iResult == 0) {
+				threadArray.threads[0] = CreateThread(NULL, 0, &ClientServerThread, &csParams, 0, &clientID);
+			}
 			// here is where server shutdown loguc could be placed
 
 		} while (1);
@@ -137,7 +139,7 @@ int  main(void)
 		createMessage(message, 160, "RED1", 4, "Uspostavljena konekcija sa serverom...", 's');
 		// create a socket
 
-		iResult = createSocket(&acceptedSocket, "127.0.0.1", 27017);
+		iResult = createSocket(&acceptedSocket, "192.168.101.109", 27017);
 		if (iResult != 0) {
 			WSACleanup();
 			return 1;
@@ -150,9 +152,12 @@ int  main(void)
 			return 1;
 		}
 
+		free(message); ///////////////////////////////////////////////// FREE
 
-		receiveServerAsClient(&serviceSocket, &acceptedSocket, recvbuf);
-
+		iResult = receiveServerAsClient(&serviceSocket, &acceptedSocket, recvbuf);
+		if (iResult == 0) {
+			threadArray.threads[0] = CreateThread(NULL, 0, &ClientServerThread, &csParams, 0, &clientID);
+		}
 		//free(message);
 		// cleanup
 		//closesocket(connectSocket);
@@ -205,6 +210,7 @@ void createQueue(Queue *queue) {
 	initializeQueue(queue, INITIAL_QUEUE_SIZE, &quecs);
 	queue->buffer = bufferArray;
 	queue->count = 6;
+
 }
 
 void createSocketArray(SocketArray *socketArray) {
