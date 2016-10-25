@@ -166,6 +166,9 @@ int RECEIVE(SOCKET* socket, char* buffer) {
 		i += iResult;
 	}
 	len = *(int*)duzina;
+
+	free(duzina); ///////////////////////////////////////////////// FREE
+
 	i = 4;
 	*(int*)buffer = len;
 	iResult = 0;

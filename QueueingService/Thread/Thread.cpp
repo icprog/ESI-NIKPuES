@@ -27,10 +27,16 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 		if (iResult > 0)
 		{
 			//uzmemo ime iz poruke
-			char * name;
+
+			int nameSize = DataNameSize(recvbuf);
+			char* name = (char *)malloc(sizeof(char)*nameSize);
+
 			CRITICAL_SECTION cs;
 			InitializeCriticalSection(&cs);
-			name = parseMessage(recvbuf, &cs);
+			parseMessage(name, nameSize, recvbuf, &cs);
+
+			
+
 			/* Ako je u pitanju samo konekcija, ovde zavrsi nit. */
 			char c = getCharacter(recvbuf, &cs);
 			if (c == 'c') {
@@ -43,6 +49,8 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 			// TODO: treba videti sta ako ne pronadje odgovarajuci bafer!
 			buffer = findBuffer(pushParams.queue, name);
 			acceptedSocket->bufferName = name;
+
+			free(name); //////////////////////////////////////////FREE
 			//TODO: Gde se free ovo ime??
 			push(buffer, recvbuf); //punimo bafer
 
@@ -231,8 +239,6 @@ DWORD WINAPI ClientServerThread(LPVOID lpParam)
 	SocketArray *socketArray = csParams.socketArray;
 	ThreadArray *threadArray = csParams.threadArray;
 	Queue *queue = csParams.queue;
-	DWORD serverToServerID;
-	threadArray->threads[3] = CreateThread(NULL, 0, &ServerServerThread, &csParams, 0, &serverToServerID);
 	// Socket used for listening for new clients 
 	SOCKET listenSocket = INVALID_SOCKET;
 	// variable used to store function return value

@@ -99,7 +99,7 @@ DWORD WINAPI sendThreadFunc(LPVOID param) {
 	closesocket(connectSocket);
 	WSACleanup();
 
-	free(data);
+	free(data);   ////////////////////////////////////////////////// FREE
 
 	return 0;
 }

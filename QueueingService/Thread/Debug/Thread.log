@@ -1,4 +1,10 @@
 ﻿  Util.cpp
+<<<<<<< HEAD
 c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\thread\util.cpp(1): warning C4627: '#include "Util.h"': skipped when looking for precompiled header use
   c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\thread\util.cpp(1): note: Add directive to 'stdafx.h' or rebuild precompiled header
   Thread.vcxproj -> C:\Users\RA4-2012\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\Thread.lib
+=======
+c:\users\ra64-2012\desktop\25.10\esi-nikpues\queueingservice\thread\util.cpp(1): warning C4627: '#include "Util.h"': skipped when looking for precompiled header use
+  c:\users\ra64-2012\desktop\25.10\esi-nikpues\queueingservice\thread\util.cpp(1): note: Add directive to 'stdafx.h' or rebuild precompiled header
+  Thread.vcxproj -> C:\Users\ra64-2012\Desktop\25.10\ESI-NIKPuES\QueueingService\Debug\Thread.lib
+>>>>>>> a4899daaa88d1886763bc476377f151afa186ed0

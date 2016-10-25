@@ -1,2 +1,6 @@
 #TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
+<<<<<<< HEAD
 Debug|Win32|C:\Users\RA4-2012\Desktop\proj\ESI-NIKPuES\QueueingService\|
+=======
+Debug|Win32|C:\Users\ra64-2012\Desktop\25.10\ESI-NIKPuES\QueueingService\|
+>>>>>>> a4899daaa88d1886763bc476377f151afa186ed0

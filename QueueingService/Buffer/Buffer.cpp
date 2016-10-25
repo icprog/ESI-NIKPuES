@@ -30,16 +30,14 @@ char getCharacter(char * data, CRITICAL_SECTION *cs)
 	//oslobodi niz
 }
 
-char * parseMessage(char * data, CRITICAL_SECTION *cs)
+void parseMessage(char * name, int nameSize, char * data, CRITICAL_SECTION *cs)
 {
 	EnterCriticalSection(cs);
-	int nameSize = DataNameSize(data);
-
-	char* name = (char *)malloc(sizeof(char)*nameSize);
+	
 	memset(name, 0, nameSize + 1);
 	memcpy(name, data + 8, nameSize); //kopiraj kraj starog bufera u novi 
 	LeaveCriticalSection(cs);
-	return name;
+	//return name;
 	
 	//oslobodi niz
 }
@@ -96,7 +94,7 @@ void expand(Buffer * buffer)
 
 	//kada povecamo moramo da premestimo podatke sa kraja starog buffer-a na pocetak novog buffer-a
 
-	//free(buffer->data);  MEMORY LEAK
+	free(buffer->data);  //MEMORY LEAK
 	buffer->data = newData;
 	buffer->size = newSize;
 	buffer->pushIdx = buffer->count;

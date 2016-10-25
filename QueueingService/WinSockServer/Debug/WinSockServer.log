@@ -1,4 +1,5 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (WinSockServer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+<<<<<<< HEAD
   Server.cpp
 c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.cpp(4): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.cpp(5): warning C4067: unexpected tokens following preprocessor directive - expected a newline
@@ -20,3 +21,6 @@ c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.
 c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.cpp(66): warning C4101: 'serviceID': unreferenced local variable
 c:\users\ra4-2012\desktop\proj\esi-nikpues\queueingservice\winsockserver\server.cpp(66): warning C4101: 'gcID': unreferenced local variable
   WinSockServer.vcxproj -> C:\Users\RA4-2012\Desktop\proj\ESI-NIKPuES\QueueingService\Debug\Server.exe
+=======
+  WinSockServer.vcxproj -> C:\Users\ra64-2012\Desktop\25.10\ESI-NIKPuES\QueueingService\Debug\Server.exe
+>>>>>>> a4899daaa88d1886763bc476377f151afa186ed0

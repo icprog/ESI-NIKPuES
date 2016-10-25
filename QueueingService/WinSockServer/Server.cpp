@@ -108,6 +108,7 @@ int  main(void)
 			if (iResult == 0) {
 				threadArray.threads[0] = CreateThread(NULL, 0, &ClientServerThread, &csParams, 0, &clientID);
 
+
 				PPSParams ppsParam;
 				ppsParam.queue = &queue;
 				ppsParam.serviceSocket = &serviceSocket;
@@ -117,6 +118,7 @@ int  main(void)
 				threadArray.threads[1] = CreateThread(NULL, 0, &PopFromService, &ppsParam, 0, &clientID);
 				ppsParam.type = 0;
 				threadArray.threads[2] = CreateThread(NULL, 0, &PopFromService, &ppsParam, 0, &clientID);
+
 			}
 			// here is where server shutdown loguc could be placed
 
@@ -150,7 +152,10 @@ int  main(void)
 		createMessage(message, 160, "RED1", 4, "Uspostavljena konekcija sa serverom...", 's');
 		// create a socket
 
-		iResult = createSocket(&acceptedSocket, "192.168.101.110", 27017);
+		//iResult = createSocket(&acceptedSocket, "192.168.101.110", 27017);
+
+		iResult = createSocket(&acceptedSocket, "192.168.101.109", 27017);
+
 		if (iResult != 0) {
 			WSACleanup();
 			return 1;
@@ -163,10 +168,12 @@ int  main(void)
 			return 1;
 		}
 
+		free(message); ///////////////////////////////////////////////// FREE
 
 		iResult = receiveServerAsClient(&serviceSocket, &acceptedSocket, recvbuf);
 		if (iResult == 0) {
 			threadArray.threads[0] = CreateThread(NULL, 0, &ClientServerThread, &csParams, 0, &clientID);
+
 
 			PPSParams ppsParam;
 			ppsParam.queue = &queue;
@@ -231,6 +238,7 @@ void createQueue(Queue *queue) {
 	initializeQueue(queue, INITIAL_QUEUE_SIZE, &quecs);
 	queue->buffer = bufferArray;
 	queue->count = 6;
+
 }
 
 void createSocketArray(SocketArray *socketArray) {
