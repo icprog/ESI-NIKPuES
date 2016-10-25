@@ -47,7 +47,6 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 
 	char recvbuf[DEFAULT_BUFLEN];
 	memset(recvbuf, 0, DEFAULT_BUFLEN);
-	Buffer * buffer;
 	do
 	{
 		// Receive data until the client shuts down the connection
@@ -67,61 +66,7 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 		{
 			/*
 				Kada iResult padne na nulu, receive je zavrsen, potrebno je poslati poruku na drugi servis!
-			*/
-			// Salji odgovor drugom servisu
-			if (initializator == 0) {
-
-				SOCKET connectSocket = INVALID_SOCKET;
-				// create a socket
-				connectSocket = socket(AF_INET,
-					SOCK_STREAM,
-					IPPROTO_TCP);
-
-				if (connectSocket == INVALID_SOCKET)
-				{
-					printf("socket failed with error: %ld\n", WSAGetLastError());
-					//WSACleanup();
-					break;
-				}
-
-				// create and initialize address structure
-				sockaddr_in serverAddress;
-				serverAddress.sin_family = AF_INET;
-				serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
-				serverAddress.sin_port = htons(SERVER_PORT_INT);
-				// connect to server specified in serverAddress and socket connectSocket
-				if (connect(connectSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR)
-				{
-					printf("Unable to connect to server.\n");
-					closesocket(connectSocket);
-					//WSACleanup();
-					break;
-				}
-
-				// Set socket to nonblocking mode
-				unsigned long int nonBlockingMode = 1;
-				iResult = ioctlsocket(connectSocket, FIONBIO, &nonBlockingMode);
-
-				// Send an prepared message with null terminator included
-				/*
-					Skini sa bafera i posalji drugom servisu.
 				*/
-				memset(recvbuf, 0, DEFAULT_BUFLEN);
-				pop(buffer, recvbuf);
-				iResult = SEND(&connectSocket, recvbuf);
-
-				if (iResult == SOCKET_ERROR)
-				{
-					printf("send failed with error: %d\n", WSAGetLastError());
-					closesocket(connectSocket);
-					//WSACleanup();
-					break;
-				}
-
-				printf("Bytes Sent: %ld\n", iResult);
-
-			}
-
 			// connection was closed gracefully
 			printf("Connection with client closed.\n");
 			closesocket(acceptedSocket->socket);
