@@ -11,7 +11,15 @@ typedef struct csParams {
 	SOCKET *serviceSocket = NULL;
 	int odgovor = -1;
 }CSParams;
-
+/*
+Struktura za parametre PopFromService.
+*/
+typedef struct ppsParamas {
+	SocketArray *socketArray = NULL;
+	Queue *queue = NULL;
+	SOCKET *serviceSocket = NULL;
+	int type = -1;                            //0 za klijente, 1 za servere
+}PPSParams;
 typedef struct ssParams {
 	SOCKET *serviceSocket = NULL;
 	int odgovor = -1;
@@ -34,12 +42,6 @@ typedef struct pushParams {
 DWORD WINAPI ClientServerThread(LPVOID lpParam);
 
 /*
-	Glavna serverska nit. Cilj joj je da omoguci uspostavu veze sa drugim serverom.
-	Kreira se u okviru main() funkcije servera.
-*/
-DWORD WINAPI ServerServerThread(LPVOID lpParam);
-
-/*
 	Ovo je funkcija za nuti koje kreira glavna nit servera.
 	Funkcija ima zadatak da procesira poruku koju klijent posalje na servis i stavi je u odgovarajuci red.
 */
@@ -48,7 +50,8 @@ DWORD WINAPI PushInService(LPVOID lpParam);
 /*
 	Ovo je funkcija za nit koju kreira glava nit servera, a koja radi proveru na svakih 200ms.
 	Funkcija ima zadatak da svakih 200ms proveri da li postoji poruka u nekom redu, i ako postoji, da je skine sa tog reda,
-	i posalje odgovarajucem klijentu koji se prijavio da ceka poruku sa tog reda.
+	i posalje odgovarajucem klijentu ili serveru koji se prijavio da ceka poruku sa tog reda. 
+	Jedan od parametara je ste da li ovo zovo klijent ili server.
 */
 DWORD WINAPI PopFromService(LPVOID lpParam);
 

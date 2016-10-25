@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Thread.h"
-
+#include "Util.h"
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27016"
 #define SERVER_PORT "27017"
@@ -126,11 +126,55 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 	return 0;
 }
 
+int sendOnSocket(Buffer *buffer, SOCKET *socket, char *data, MySocket *mySocket) {
+
+	pop(buffer, data);
+
+	// Send an prepared message with null terminator included
+
+	if (mySocket != NULL) {
+		int iResult = sendMessage(&mySocket->socket, data);
+
+		if (iResult == SOCKET_ERROR)
+		{
+			printf("send failed with error: %d\n", WSAGetLastError());
+			closesocket(mySocket->socket);
+			//WSACleanup();
+			return 1;
+		}
+		/*
+		Zatvori konekciju sa klijentom.
+		*/
+		closesocket(mySocket->socket);
+		mySocket->socket = INVALID_SOCKET;
+		mySocket->bufferName = NULL;
+		printf("Bytes Sent: %ld\n", iResult);
+	}
+	else {
+		int iResult = sendMessage(socket, data);
+
+		if (iResult == SOCKET_ERROR)
+		{
+			printf("send failed with error: %d\n", WSAGetLastError());
+			closesocket(mySocket->socket);
+			//WSACleanup();
+			return 1;
+		}
+		printf("Bytes Sent: %ld\n", iResult);
+	}
+
+
+	return 0;
+
+}
+
 DWORD WINAPI PopFromService(LPVOID lpParam)
 {
-	CSParams* csParams = (CSParams*)lpParam;
-	Queue *queue = csParams->queue;
-	SocketArray *socketArray = csParams->socketArray;
+	PPSParams* ppsParams = (PPSParams*)lpParam;
+	Queue *queue = ppsParams->queue;
+	SocketArray *socketArray = ppsParams->socketArray;
+	int type = ppsParams->type;
+	SOCKET *serviceSocket = ppsParams->serviceSocket;
 
 	/*
 	
@@ -138,35 +182,37 @@ DWORD WINAPI PopFromService(LPVOID lpParam)
 		Ako ima, prodji kroz niz soketa i vidi da li ima aktivni soket kroz koji neki klijent ceka na tom redu.
 		Ako ima, skini poruku sa bafera i posalji je klijentu.
 	*/
-	for (int i = 0; i < queue->size; i++) {
-		if (queue->buffer[i].count > 0) {
-			for (int j = 0; j < socketArray->size; j++) {
-				if (socketArray->sockets[i].bufferName != NULL && socketArray->sockets[i].socket != INVALID_SOCKET) {
-					if (strcmp(socketArray->sockets[i].bufferName, queue->buffer[i].name) == 0) {
-
-						char *recvbuf = (char *)malloc(sizeof(char) * queue->buffer[i].size);
-						pop(&queue->buffer[i], recvbuf);
-
-						// Send an prepared message with null terminator included
-						int iResult = SEND(&socketArray->sockets[i].socket, recvbuf);
-
-						if (iResult == SOCKET_ERROR)
-						{
-							printf("send failed with error: %d\n", WSAGetLastError());
-							closesocket(socketArray->sockets[i].socket);
-							//WSACleanup();
-							//return 1;
-							break;
-						}
-						/*
-							Zatvori konekciju sa klijentom.
-						*/
-						closesocket(socketArray->sockets[i].socket);
-						socketArray->sockets[i].socket = INVALID_SOCKET;
-						socketArray->sockets[i].bufferName = NULL;
-						printf("Bytes Sent: %ld\n", iResult);
-						free(recvbuf);
+	while (1) {
+		if (type == 1) {
+			for (int i = 0; i < queue->size; i += 2) {
+				if (queue->buffer[i].count > 0) {
+					char *recvbuf = (char *)malloc(sizeof(char) * queue->buffer[i].size);
+					memset(recvbuf, 0, queue->buffer[i].size);
+					int iResult = sendOnSocket(&queue->buffer[i], serviceSocket, recvbuf, NULL);
+					if (iResult != 0) {
+						break;  //////// STA OVDE ?????
 					}
+					free(recvbuf);
+				}
+			}
+		}
+		else {
+			for (int i = 1; i < queue->size; i+=2) {
+				if (queue->buffer[i].count > 0) {
+					for (int j = 0; j < socketArray->size; j++) {
+						if (socketArray->sockets[i].bufferName != NULL && socketArray->sockets[i].socket != INVALID_SOCKET) {
+							if (strcmp(socketArray->sockets[i].bufferName, queue->buffer[i].name) == 0) {
+								char *recvbuf = (char *)malloc(sizeof(char) * queue->buffer[i].size);
+								memset(recvbuf, 0, queue->buffer[i].size);
+								int iResult = sendOnSocket(&queue->buffer[i], NULL, recvbuf, &socketArray->sockets[i]);
+								if (iResult != 0) {
+									break;  //////// STA OVDE ?????
+								}
+								free(recvbuf);
+							}
+						}
+					}
+
 				}
 			}
 		}
@@ -359,23 +405,6 @@ DWORD WINAPI ClientServerThread(LPVOID lpParam)
 	//closesocket(listenSocket);
 	//WSACleanup();
 
-
-
-
-	return 0;
-}
-
-DWORD WINAPI ServerServerThread(LPVOID lpParam)
-{
-	CSParams csParams = *(CSParams*)lpParam;
-	//SocketArray *socketArray = csParams.socketArray;
-	//ThreadArray *threadArray = csParams.threadArray;
-	//Queue *queue = csParams.queue;
-	int odgovor = csParams.odgovor;
-	SOCKET *serviceSocket = csParams.serviceSocket;
-	SocketArray *sa = csParams.socketArray;
-	// Socket used for communication with client
-	SOCKET *acceptedSocket = &sa->sockets[0].socket;
 
 
 
