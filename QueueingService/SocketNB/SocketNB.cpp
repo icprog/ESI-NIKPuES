@@ -3,7 +3,7 @@
 
 #define SLEEP_TIME 50
 
-enum codes { SUCCESS = 0, SOCK_ERR = -1, SLEEP = -2, CONN_ERR = -3 };
+enum codes { SUCCESS = 0, SOCK_ERR = -1, SLEEP = -2, CONN_ERR = -3, SEND_ERR = -4, REC_ERR = -5};
 
 
 int bufferLength(char* buffer) {
@@ -50,8 +50,8 @@ int sendNB(SOCKET* socket, char* buffer, int bufferLength) {
 		printf("sendto failed with error: %d\n", WSAGetLastError());
 		closesocket(*socket);
 		*socket = INVALID_SOCKET;
-		WSACleanup();
-		return CONN_ERR; // connection error code: 2
+		//WSACleanup();
+		return SEND_ERR; // connection error code: 2
 	}
 
 	return iResult; // success code: 0;
@@ -71,8 +71,8 @@ int SEND(SOCKET* socket, char* buffer) {
 			printf("sendto failed with error: %d\n", WSAGetLastError());
 			closesocket(*socket);
 			*socket = INVALID_SOCKET;
-			WSACleanup();
-			return CONN_ERR; // connection error code: 2
+			//WSACleanup();
+			return SEND_ERR; // connection error code: 2
 		}
 		i += iResult;
 	}
@@ -133,7 +133,8 @@ int receiveNB(SOCKET* socket, char* buffer, int bufferLength, int continueFrom) 
 		printf("recv failed with error: %d\n", WSAGetLastError());
 		closesocket(*socket);
 		*socket = INVALID_SOCKET;
-		WSACleanup();
+		//WSACleanup();
+		return REC_ERR;
 	}
 
 
@@ -156,11 +157,11 @@ int RECEIVE(SOCKET* socket, char* buffer) {
 		} while (iResult == SLEEP);
 		if (iResult == SOCKET_ERROR)
 		{
-			printf("sendto failed with error: %d\n", WSAGetLastError());
+			printf("Receiving length failed with error: %d\n", WSAGetLastError());
 			closesocket(*socket);
 			//socket = INVALID_SOCKET;
 			WSACleanup();
-			return CONN_ERR; // connection error code: 2
+			return REC_ERR; // connection error code: 2
 		}
 		i += iResult;
 	}
@@ -174,11 +175,11 @@ int RECEIVE(SOCKET* socket, char* buffer) {
 		} while (iResult == SLEEP);
 		if (iResult == SOCKET_ERROR)
 		{
-			printf("sendto failed with error: %d\n", WSAGetLastError());
+			printf("reeiving the whole message failed with error: %d\n", WSAGetLastError());
 			closesocket(*socket);
 			//socket = INVALID_SOCKET;
 			//WSACleanup();
-			return CONN_ERR; // connection error code: 2
+			return REC_ERR; // connection error code: 2
 		}
 		i += iResult;
 	}

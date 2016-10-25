@@ -7,6 +7,7 @@
 #include "../SocketArray/SocketArray.h";
 #include "../Thread/Thread.h";
 #include "../ThreadArray/ThreadArray.h";
+#include "../Thread/Util.h";
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27017"
@@ -15,7 +16,7 @@
 #define INITIAL_QUEUE_SIZE 10
 void createQueue(Queue *queue);
 void createSocketArray(SocketArray *socketArray);
-void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue *queue, SOCKET *serviceSocket, int odgovor);
+void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue *queue, int odgovor);
 
 bool InitializeWindowsSockets();
 int  main(void) 
@@ -35,8 +36,7 @@ int  main(void)
 		printf("\n>(Unesite 1 ili 2) ");
 		scanf("%d", &odgovor);
 	} while (odgovor != 1 && odgovor != 2);
-	
-	SOCKET *serviceSocket = NULL;
+
 	/*
 	Kreiranje redova( buffera) i niza redova(queuea )
 	*/
@@ -60,7 +60,104 @@ int  main(void)
 		2: Nit koja periodicno proverava da li je neki tread zavrsio sa radom i zatvara handle na njega
 	*/
 	ThreadArray threadArray;
-	createThreadArray(&threadArray, &sockets, &queue, serviceSocket, odgovor);
+	createThreadArray(&threadArray, &sockets, &queue, odgovor);
+
+
+	DWORD clientID, serviceID, gcID;
+	SOCKET serviceSocket = INVALID_SOCKET;
+	// Socket used for listening for new clients 
+	SOCKET listenSocket = INVALID_SOCKET;
+	SOCKET acceptedSocket = INVALID_SOCKET;
+	char recvbuf[DEFAULT_BUFLEN];
+	// variable used to store function return value
+	int iResult;
+	CSParams csParams;
+	csParams.queue = &queue;
+	csParams.socketArray = &sockets;
+	csParams.threadArray = &threadArray;
+	csParams.serviceSocket = &serviceSocket;
+	csParams.odgovor = odgovor;
+	unsigned long int nonBlockingMode = 1;
+
+
+	if (odgovor == 1) {
+		printf("\n Ovaj servis je server.\n Cekam klijenta da inicira komunikaciju...");
+
+
+	
+		iResult = listenSocketFunc(&listenSocket, DEFAULT_PORT);
+		if (iResult == 1) {
+			// Ako je ovde greska, kraj rada
+			return 1;
+		}
+		do
+		{
+			iResult = ioctlsocket(acceptedSocket, FIONBIO, &nonBlockingMode);
+			select(&listenSocket);
+			// Wait for clients and accept client connections.
+			// Returning value is acceptedSocket used for further
+			// Client<->Server communication. This version of
+			// server will handle only one client.
+			iResult = accept(&acceptedSocket, &listenSocket);
+			if (iResult == 1) {
+				// Ako je ovde greska, kraj rada
+				return 1;
+			}
+			receiveServerAsServer(&serviceSocket, &acceptedSocket, recvbuf);
+
+			// here is where server shutdown loguc could be placed
+
+		} while (1);
+
+		// shutdown the connection since we're done
+		//iResult = shutdown(acceptedSocket, SD_SEND);
+		/*
+		if (iResult == SOCKET_ERROR)
+		{
+		printf("shutdown failed with error: %d\n", WSAGetLastError());
+		closesocket(acceptedSocket);
+		WSACleanup();
+		return 1;
+		}*/
+
+		// cleanup
+		//closesocket(listenSocket);
+		//closesocket(acceptedSocket);
+		//WSACleanup();
+
+	}
+	else {
+		printf("\n Ovaj servis je klijent.\n Iniciram komunikaciju sa serverom...");
+
+
+
+		char *message;
+		createMessage(message, 160, "RED1", 4, "Uspostavljena konekcija sa serverom...", 's');
+		// create a socket
+
+		iResult = createSocket(&acceptedSocket, "127.0.0.1", 27017);
+		if (iResult != 0) {
+			WSACleanup();
+			return 1;
+		}
+
+		// Send an prepared message with null terminator included
+
+		iResult = sendMessage(&acceptedSocket, message);
+		if (iResult != 0) {
+			return 1;
+		}
+
+
+		receiveServerAsClient(&serviceSocket, &acceptedSocket, recvbuf);
+
+		free(message);
+		// cleanup
+		//closesocket(connectSocket);
+		//WSACleanup();
+	}
+
+
 
 	//Sleep(INFINITE);
     return 0;
@@ -115,7 +212,7 @@ void createSocketArray(SocketArray *socketArray) {
 	DeleteCriticalSection(&sockets_cs);
 }
 
-void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue *queue, SOCKET *serviceSocket, int odgovor) {
+void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue *queue, int odgovor) {
 	printf("\nCREATE THREAD");
 	CRITICAL_SECTION thread_cs;
 	InitializeCriticalSection(&thread_cs);
@@ -123,22 +220,13 @@ void createThreadArray(ThreadArray *threadArray, SocketArray *socketArray, Queue
 	threadArray->count = 3;
 	DeleteCriticalSection(&thread_cs);
 
-	DWORD clientID, serviceID, gcID;
-
-	CSParams csParams;
-	csParams.queue = queue;
-	csParams.socketArray = socketArray;
-	csParams.threadArray = threadArray;
-	csParams.serviceSocket = serviceSocket;
-	csParams.odgovor = odgovor;
-	printf("Odgovor: %d", csParams.odgovor);
 	//threadArray->threads[1] = CreateThread(NULL, 0, &ServerServerThread, &csParams/* IZMENITI */, 0, &serviceID);
 
-	threadArray->threads[0] = CreateThread(NULL, 0, &ClientServerThread, &csParams, 0, &clientID);
+	//threadArray->threads[0] = CreateThread(NULL, 0, &ClientServerThread, &csParams, 0, &clientID);
 
 	//WaitForSingleObject(serverToServer, INFINITE);
 
-	WaitForSingleObject(threadArray->threads[0], INFINITE);
+	//WaitForSingleObject(threadArray->threads[0], INFINITE);
 
 	/*
 	while (1) {

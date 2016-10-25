@@ -64,8 +64,8 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 				if (connectSocket == INVALID_SOCKET)
 				{
 					printf("socket failed with error: %ld\n", WSAGetLastError());
-					WSACleanup();
-					return 1;
+					//WSACleanup();
+					break;
 				}
 
 				// create and initialize address structure
@@ -78,7 +78,8 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 				{
 					printf("Unable to connect to server.\n");
 					closesocket(connectSocket);
-					WSACleanup();
+					//WSACleanup();
+					break;
 				}
 
 				// Set socket to nonblocking mode
@@ -97,8 +98,8 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 				{
 					printf("send failed with error: %d\n", WSAGetLastError());
 					closesocket(connectSocket);
-					WSACleanup();
-					return 1;
+					//WSACleanup();
+					break;
 				}
 
 				printf("Bytes Sent: %ld\n", iResult);
@@ -115,7 +116,6 @@ DWORD WINAPI PushInService(LPVOID lpParam)
 		else
 		{
 			// there was an error during recv
-			printf("Thread: %d", GetCurrentThreadId());
 			printf("recv failed with error: %d\n", WSAGetLastError());
 			acceptedSocket->socket = INVALID_SOCKET;
 			free(acceptedSocket->bufferName);
@@ -154,8 +154,9 @@ DWORD WINAPI PopFromService(LPVOID lpParam)
 						{
 							printf("send failed with error: %d\n", WSAGetLastError());
 							closesocket(socketArray->sockets[i].socket);
-							WSACleanup();
-							return 1;
+							//WSACleanup();
+							//return 1;
+							break;
 						}
 						/*
 							Zatvori konekciju sa klijentom.
@@ -291,7 +292,8 @@ DWORD WINAPI ClientServerThread(LPVOID lpParam)
 					if (iResult == SOCKET_ERROR)
 					{
 						fprintf(stderr, "select failed with error: %ld\n", WSAGetLastError());
-						return -1; //error code: -1
+						//return -1; //error code: -1
+						break;
 					}
 
 					// now, lets check if there are any sockets ready
@@ -314,8 +316,9 @@ DWORD WINAPI ClientServerThread(LPVOID lpParam)
 				{
 					printf("accept failed with error: %d\n", WSAGetLastError());
 					closesocket(listenSocket);
-					WSACleanup();
-					return 1;
+					//WSACleanup();
+					//return 1;
+					break;
 				}
 				printf("\n KLIJENT JE PRIHVACEN!\n");
 
@@ -373,279 +376,7 @@ DWORD WINAPI ServerServerThread(LPVOID lpParam)
 	SocketArray *sa = csParams.socketArray;
 	// Socket used for communication with client
 	SOCKET *acceptedSocket = &sa->sockets[0].socket;
-	if (odgovor == 1) {
-		printf("\n Ovaj servis je server.\n Cekam klijenta da inicira komunikaciju...");
 
-		// Socket used for listening for new clients 
-		SOCKET listenSocket = INVALID_SOCKET;
-
-		// variable used to store function return value
-		int iResult;
-		// Buffer used for storing incoming data
-		char recvbuf[DEFAULT_BUFLEN];
-
-
-		// Prepare address information structures
-		addrinfo *resultingAddress = NULL;
-		addrinfo hints;
-
-		memset(&hints, 0, sizeof(hints));
-		hints.ai_family = AF_INET;       // IPv4 address
-		hints.ai_socktype = SOCK_STREAM; // Provide reliable data streaming
-		hints.ai_protocol = IPPROTO_TCP; // Use TCP protocol
-		hints.ai_flags = AI_PASSIVE;     // 
-
-										 // Resolve the server address and port
-		iResult = getaddrinfo(NULL, SERVER_PORT, &hints, &resultingAddress);
-		if (iResult != 0)
-		{
-			printf("getaddrinfo failed with error: %d\n", iResult);
-			WSACleanup();
-			return 1;
-		}
-
-		// Create a SOCKET for connecting to server
-		listenSocket = socket(AF_INET,      // IPv4 address famly
-			SOCK_STREAM,  // stream socket
-			IPPROTO_TCP); // TCP
-
-		if (listenSocket == INVALID_SOCKET)
-		{
-			printf("socket failed with error: %ld\n", WSAGetLastError());
-			freeaddrinfo(resultingAddress);
-			WSACleanup();
-			return 1;
-		}
-
-		// Setup the TCP listening socket - bind port number and local address 
-		// to socket
-		iResult = bind(listenSocket, resultingAddress->ai_addr, (int)resultingAddress->ai_addrlen);
-		if (iResult == SOCKET_ERROR)
-		{
-			printf("bind failed with error: %d\n", WSAGetLastError());
-			freeaddrinfo(resultingAddress);
-			closesocket(listenSocket);
-			WSACleanup();
-			return 1;
-		}
-		printf("\nLISTEN SOCKET: %d\n", listenSocket);
-		// Since we don't need resultingAddress any more, free it
-		freeaddrinfo(resultingAddress);
-		unsigned long int nonBlockingMode = 1;
-		iResult = ioctlsocket(listenSocket, FIONBIO, &nonBlockingMode);
-		// Set listenSocket in listening mode
-		iResult = listen(listenSocket, SOMAXCONN);
-		if (iResult == SOCKET_ERROR)
-		{
-			printf("listen failed with error: %d\n", WSAGetLastError());
-			closesocket(listenSocket);
-			WSACleanup();
-			return 1;
-		}
-
-		printf("Server for service initialized, waiting for clients.\n");
-
-		do
-		{
-			iResult = ioctlsocket(*acceptedSocket, FIONBIO, &nonBlockingMode);
-			FD_SET set;
-			timeval timeVal;
-
-			do {
-				iResult = 0;
-				FD_ZERO(&set);
-				// Add socket we will wait to read from
-				FD_SET(listenSocket, &set);
-
-				// Set timeouts to zero since we want select to return
-				// instantaneously
-				timeVal.tv_sec = 0;
-				timeVal.tv_usec = 0;
-				iResult = select(0 /* ignored */, &set, NULL, NULL, &timeVal);
-
-				// lets check if there was an error during select
-				if (iResult == SOCKET_ERROR)
-				{
-					fprintf(stderr, "select failed with error: %ld\n", WSAGetLastError());
-					return -1; //error code: -1
-				}
-
-				// now, lets check if there are any sockets ready
-				if (iResult == 0)
-				{
-					//printf("\n SPAVAM! ");
-					// there are no ready sockets, sleep for a while and check again
-					Sleep(200);
-				}
-
-			} while (iResult == 0);
-			// Wait for clients and accept client connections.
-			// Returning value is acceptedSocket used for further
-			// Client<->Server communication. This version of
-			// server will handle only one client.
-			*acceptedSocket = accept(listenSocket, NULL, NULL);
-
-			if (*acceptedSocket == INVALID_SOCKET)
-			{
-				printf("accept failed with error: %d\n", WSAGetLastError());
-				closesocket(listenSocket);
-				WSACleanup();
-				return 1;
-			}
-
-				// Receive data until the client shuts down the connection
-				iResult = RECEIVE(acceptedSocket, recvbuf);
-				if (iResult > 0)
-				{
-					printf("Message received from client: %s.\n", recvbuf+12);
-
-					// Send an prepared message with null terminator included
-					char *messageToSend = " Uspostavljena konekcija sa klijentom...";
-					char *data = (char *)malloc(sizeof(char) * 160);
-					memset(data, 0, 160);
-					data[0] = 160;
-
-					*(char*)((int *)data + 1) = 4;
-					char *ime = "RED1";
-
-					memcpy(data + 8, ime, 4);
-					memcpy(data + 12, messageToSend, 160);
-					iResult = SEND(acceptedSocket, data);
-
-					if (iResult == SOCKET_ERROR)
-					{
-						printf("send failed with error: %d\n", WSAGetLastError());
-						closesocket(*acceptedSocket);
-						WSACleanup();
-						return 1;
-					}
-
-					// TODO: Naci gde zatvoriti ovaj accepted socekt
-					serviceSocket = acceptedSocket;
-					iResult = 0;
-
-				}
-				if (iResult == 0)
-				{
-					// connection was closed gracefully
-					printf("Uspostavljena veza sa klijentom.\n");
-					//closesocket(acceptedSocket);
-				}
-				else
-				{
-					// there was an error during recv
-					printf("recv failed with error: %d\n", WSAGetLastError());
-					closesocket(*acceptedSocket);
-				}
-
-			// here is where server shutdown loguc could be placed
-
-		} while (1);
-
-		// shutdown the connection since we're done
-		//iResult = shutdown(acceptedSocket, SD_SEND);
-		/*
-		if (iResult == SOCKET_ERROR)
-		{
-			printf("shutdown failed with error: %d\n", WSAGetLastError());
-			closesocket(acceptedSocket);
-			WSACleanup();
-			return 1;
-		}*/
-
-		// cleanup
-		//closesocket(listenSocket);
-		//closesocket(acceptedSocket);
-		//WSACleanup();
-
-	}
-	else {
-		printf("\n Ovaj servis je klijent.\n Iniciram komunikaciju sa serverom...");
-
-
-		// variable used to store function return value
-		int iResult;
-		// message to send
-		char *messageToSend = "Uspostavljena konekcija sa serverom..";
-		/////////////////////////////////////////////////////////////////////////////////
-		char *data = (char *)malloc(sizeof(char) * 160);
-		memset(data, 0, 160);
-		data[0] = 160;
-
-		*(char*)((int *)data + 1) = 4;
-		char *ime = "RED1";
-
-		memcpy(data + 8, ime, 4);
-		memcpy(data + 12, messageToSend, 160);
-	
-
-		// create a socket
-		*acceptedSocket = socket(AF_INET,
-			SOCK_STREAM,
-			IPPROTO_TCP);
-
-		if (*acceptedSocket == INVALID_SOCKET)
-		{
-			printf("socket failed with error: %ld\n", WSAGetLastError());
-			WSACleanup();
-			return 1;
-		}
-
-		// create and initialize address structure
-		sockaddr_in serverAddress;
-		serverAddress.sin_family = AF_INET;
-		serverAddress.sin_addr.s_addr = inet_addr("192.168.101.110");
-		serverAddress.sin_port = htons(27017);
-		// connect to server specified in serverAddress and socket connectSocket
-		if (connect(*acceptedSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR)
-		{
-			printf("Unable to connect to server.\n");
-			closesocket(*acceptedSocket);
-			WSACleanup();
-		}
-
-		// Send an prepared message with null terminator included
-		iResult = SEND(acceptedSocket, data);
-
-		if (iResult == SOCKET_ERROR)
-		{
-			printf("send failed with error: %d\n", WSAGetLastError());
-			closesocket(*acceptedSocket);
-			WSACleanup();
-			return 1;
-		}
-
-		printf("Bytes Sent: %ld\n", iResult);
-		// Buffer used for storing incoming data
-		char recvbuf[DEFAULT_BUFLEN];
-		do
-		{
-			// Receive data until the client shuts down the connection
-			iResult = RECEIVE(acceptedSocket, recvbuf);
-			if (iResult > 0)
-			{
-				printf("Message received from client: %s.\n", recvbuf+12);
-				// TODO: Naci gde zatvoriti ovaj accepted socekt
-				serviceSocket = acceptedSocket;
-			}
-			else if (iResult == 0)
-			{
-				// connection was closed gracefully
-				printf("Connection with client closed.\n");
-				closesocket(*acceptedSocket);
-			}
-			else
-			{
-				// there was an error during recv
-				printf("recv failed with error: %d\n", WSAGetLastError());
-				closesocket(*acceptedSocket);
-			}
-		} while (iResult > 0);
-
-		// cleanup
-		//closesocket(connectSocket);
-		//WSACleanup();
-	}
 
 
 	return 0;
